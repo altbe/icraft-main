@@ -1,0 +1,7 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/altbe/icraft-front-v8.git
+[submodule "backend"]
+	path = backend
+	url = https://github.com/altgene/unico-api.git
+	branch = main
