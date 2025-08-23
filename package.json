@@ -1,0 +1,48 @@
+{
+  "name": "icraft-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "iCraftStories - AI-powered illustrated story creation platform",
+  "scripts": {
+    "setup": "./scripts/setup.sh",
+    "update": "./scripts/update.sh",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:dev": "./scripts/deploy.sh dev",
+    "deploy:qa": "./scripts/deploy.sh qa",
+    "deploy:prod": "./scripts/deploy.sh prod",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run compile",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && (npm run lint || echo 'Backend linting not configured')",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && (npm run test || echo 'Frontend tests not configured')",
+    "test:backend": "cd backend && npm run test",
+    "clean": "npm run clean:frontend && npm run clean:backend",
+    "clean:frontend": "cd frontend && rm -rf dist node_modules/.vite",
+    "clean:backend": "cd backend && npm run clean",
+    "repo:status": "gh repo view --json name,description,url,pushedAt && git submodule status",
+    "repo:issues": "gh issue list --limit 10",
+    "repo:prs": "gh pr list --limit 10",
+    "clone:fresh": "gh repo clone altbe/icraft-main . --recurse-submodules",
+    "pr:create": "gh pr create --web",
+    "pr:view": "gh pr view --web",
+    "postinstall": "echo 'Run npm run setup to initialize submodules and install dependencies'"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/altbe/icraft-main.git"
+  },
+  "author": "iCraftStories Team",
+  "license": "Private"
+}

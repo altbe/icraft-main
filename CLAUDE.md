@@ -6,14 +6,38 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **iCraftStories** - Full-stack AI-powered illustrated story creation platform with team collaboration, offline-first PWA architecture, and multi-language support.
 
-- **Frontend**: `icraft-front-v8/` - React PWA with TypeScript, Konva canvas, IndexedDB sync
-- **Backend**: `unico-api/` - Zuplo API Gateway (BFF architecture) with Supabase + Stripe integration
+This is a **monorepo with Git submodules**:
+- **Frontend**: `frontend/` (submodule: `icraft-front-v8`) - React PWA with TypeScript, Konva canvas, IndexedDB sync
+- **Backend**: `backend/` (submodule: `unico-api`) - Zuplo API Gateway (BFF architecture) with Supabase + Stripe integration
+
+## Repository Setup
+
+### Initial Setup
+```bash
+# Clone the main repository
+git clone <main-repo-url>
+cd icraft-main
+
+# Initialize and update submodules
+git submodule update --init --recursive
+```
+
+### Working with Submodules
+```bash
+# Update submodules to latest commits
+git submodule update --remote
+
+# Work within each submodule (each has its own git history)
+cd frontend  # or cd backend
+git checkout main
+git pull origin main
+```
 
 ## Development Commands
 
-### Frontend (`icraft-front-v8/`)
+### Frontend (`frontend/`)
 ```bash
-cd icraft-front-v8
+cd frontend
 npm run dev          # Start Vite development server (port 3000)
 npm run build        # Build for production (includes typecheck)
 npm run compile      # TypeScript compilation check only
@@ -29,9 +53,9 @@ npm run tag:create   # Create deployment tags for QA/production
 npm run tag:status   # Check deployment status across environments
 ```
 
-### Backend (`unico-api/`)
+### Backend (`backend/`)
 ```bash
-cd unico-api
+cd backend
 npm run dev          # Start Zuplo development server (includes clean + compile)
 npm run test         # Run Zuplo test suite (includes clean + compile)
 npm run compile      # TypeScript compilation check only
@@ -149,18 +173,18 @@ async createSubscription(): Promise<void> {
 
 ## Documentation
 
-- **Architecture Decisions**: See `icraft-front-v8/docs/adr/` for detailed ADRs
-- **API Reference**: `unico-api/docs-internal/api-reference.md`
-- **Sync Documentation**: `icraft-front-v8/docs/SYNC.md`
-- **Target Architecture**: `unico-api/TARGET-STATE-ARCHITECTURE.md`
+- **Architecture Decisions**: See `frontend/docs/adr/` for detailed ADRs
+- **API Reference**: `backend/docs-internal/api-reference.md`
+- **Sync Documentation**: `frontend/docs/SYNC.md`
+- **Target Architecture**: `backend/TARGET-STATE-ARCHITECTURE.md`
 
 ## Webhook Infrastructure and Sync Implementation
 
 ### Current Webhook Status (Verified June 2025)
-- ✅ **User Lifecycle Webhooks**: Complete implementation in `unico-api/modules/icraft-clerk.ts`
+- ✅ **User Lifecycle Webhooks**: Complete implementation in `backend/modules/icraft-clerk.ts`
   - `user.created`, `user.updated`, `user.deleted` events handled
   - Creates user profiles with default credits and settings
-- ✅ **Organization Webhooks**: Team membership sync via `unico-api/modules/clerk-organization-webhooks.ts`
+- ✅ **Organization Webhooks**: Team membership sync via `backend/modules/clerk-organization-webhooks.ts`
 - ✅ **Stripe Integration Webhooks**: User creation with Stripe customer setup
 
 ### Sync Architecture
@@ -170,8 +194,8 @@ async createSubscription(): Promise<void> {
 - **Audit Trail**: All user changes logged in Supabase with timestamps
 
 ### Webhook Testing
-- Test webhook handler: `unico-api/rerunClerkWebhook.js`
-- Webhook routes configured in `unico-api/config/routes.oas.json`
+- Test webhook handler: `backend/rerunClerkWebhook.js`
+- Webhook routes configured in `backend/config/routes.oas.json`
 
 ## Data Auditing and Record Keeping
 

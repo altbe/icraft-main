@@ -12,17 +12,54 @@ This repository uses Git submodules to manage two separate applications:
 ## Quick Start
 
 ```bash
-# Clone with submodules
+# Clone with submodules (using gh CLI)
+npm run clone:fresh
+# OR traditional git
 git clone --recursive https://github.com/altbe/icraft-main.git
 cd icraft-main
 
-# Or if already cloned
-git submodule init
-git submodule update
+# Setup and development
+npm run setup    # Initialize submodules and install dependencies
+npm run dev      # Start both frontend and backend
+```
 
-# Development
-cd frontend && npm run dev    # Frontend on port 3000
-cd backend && npm run dev     # Backend development server
+## Available Commands
+
+### Development
+```bash
+npm run dev              # Start both services
+npm run dev:frontend     # Frontend only (port 3000)
+npm run dev:backend      # Backend only
+```
+
+### Building & Testing
+```bash
+npm run build           # Build both projects
+npm run test            # Run all tests
+npm run lint            # Lint both projects
+npm run clean           # Clean build artifacts
+```
+
+### Repository Management
+```bash
+npm run setup           # Initialize submodules and dependencies
+npm run update          # Update submodules to latest
+npm run repo:status     # View repo info and submodule status
+npm run repo:issues     # List recent issues
+npm run repo:prs        # List recent pull requests
+```
+
+### Pull Requests
+```bash
+npm run pr:create       # Create PR in web interface
+npm run pr:view         # View current PR in web interface
+```
+
+### Deployment
+```bash
+npm run deploy:dev      # Deploy to development
+npm run deploy:qa       # Deploy to QA
+npm run deploy:prod     # Deploy to production
 ```
 
 ## Submodule Management
