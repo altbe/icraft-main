@@ -2,6 +2,78 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Current Work Session (2025-01-06)
+
+### Recently Completed Work
+
+#### ✅ Phase 1: Database Foundation (Partial)
+- Created `search_custom_images()` database function (simplified version)
+- MLX Qwen2.5-VL processing scripts for image categorization
+- Generated Spanish translations and category updates
+- Batch import scripts ready (`backend/scripts/`)
+
+#### ✅ Backend Integration
+- Updated `icraft-images.ts` API endpoint to use new search function
+- Removed deprecated `icraft-custom-images.ts` module
+- Basic search functionality working
+
+#### ✅ Frontend Improvements
+- Enhanced ImageSearch component with better error handling
+- Fixed token alignment by subscription plan
+- Added Playwright test suite for responsive layouts
+- Updated PWA service worker utilities
+
+#### ✅ Configuration
+- Added `.mcp.json` with Stripe and Supabase MCP servers (excluded from git)
+
+### 🚧 In Progress / Next Steps
+
+#### Phase 1: Database Layer (Remaining)
+- [ ] Deploy `search_custom_images()` function to both prod and non-prod databases
+- [ ] Create full i18n schema with translation tables
+- [ ] Add categories master table with EN/ES translations
+- [ ] Implement featured images and category samples functions
+
+#### Phase 2: API Unification
+- [ ] Unified `/v1/images/search` endpoint for both Pixabay + custom images
+- [ ] Featured images endpoint with i18n support
+- [ ] Rate limiting implementation (100 req/60s)
+- [ ] Proper cache headers (Cache-Control, Vary)
+
+#### Phase 3: Frontend Service Layer
+- [ ] Client-side caching with TTL
+- [ ] IndexedDB schema for offline image storage
+- [ ] Background sync for image searches
+- [ ] Memory cache invalidation on language change
+
+#### Phase 4: UI Components
+- [ ] Unified search interface mixing both sources
+- [ ] Category pills filter component
+- [ ] Source labels on mixed image grid
+- [ ] Pagination component for large result sets
+- [ ] Empty state with search suggestions
+
+#### Phase 5: Internationalization
+- [ ] Complete EN/ES translation files for image search
+- [ ] Dynamic language switching with result refresh
+- [ ] Localized category names and descriptions
+
+#### Phase 6: CDN Optimization
+- [ ] Cloudflare Worker for image transformations
+- [ ] Automatic thumbnail generation
+- [ ] WebP conversion for optimal loading
+
+### Testing & Deployment
+- [ ] Run new Playwright tests in CI/CD pipeline
+- [ ] Test search performance with both image sources
+- [ ] Verify Spanish translations quality
+- [ ] Load test unified search endpoint
+
+### Notes
+- Full implementation plan in `IMAGE_SEARCH_ENHANCEMENTS.md`
+- MLX processing scripts can process additional image batches as needed
+- Database function needs deployment before full testing
+
 ## Project Overview
 
 **iCraftStories** - Full-stack AI-powered illustrated story creation platform with team collaboration, offline-first PWA architecture, and multi-language support.
