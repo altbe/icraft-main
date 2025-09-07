@@ -1,6 +1,6 @@
 # iCraftStories TODO
 
-**Last Updated:** September 2, 2025  
+**Last Updated:** September 7, 2025  
 **Project:** iCraftStories Monorepo (Frontend + Backend)
 
 ## 🚨 Critical - Immediate Actions
@@ -60,7 +60,39 @@
   - Reduce external API dependencies
   - **Effort:** 4-5 hours
 
+## 🎯 Image Search Enhancements - IN PROGRESS
+
+### Completed (September 7, 2025)
+- [x] **Phase 1: Database Foundation**
+  - Deployed all schema to prod/non-prod environments
+  - Generated and stored 1,196 BGE-M3 embeddings
+  - Created 2,392 translations (EN/ES)
+  - Added 20 categories with i18n support
+  - Deployed `search_custom_images_vector` stored procedure
+  - Updated backend API to use new search function
+
+### Next Priority
+- [ ] **Phase 2: Query Embeddings**
+  - Implement Cloudflare Workers AI with @cf/baai/bge-m3
+  - Enable vector search in stored procedure
+  - Test multilingual semantic search
+
+- [ ] **Phase 3: Frontend Integration**
+  - Update UI components for language toggle
+  - Implement client-side caching
+  - Add offline support with IndexedDB
+
 ## ✅ Recently Completed
+
+### September 2025
+- [x] Image Search Database Migration - September 7
+  - BGE-M3 embeddings for 1,196 images
+  - Full i18n support with translations
+  - Vector search infrastructure ready
+- [x] CLERK_WEBHOOK_ICRAFT configured in Zuplo - September 1
+- [x] Clerk v5 Migration verified (v5.45.0) - September 1
+- [x] Backend API Compilation verified - September 1
+- [x] React Hooks Violation fixed in CanvasPreview.tsx - September 1
 
 ### January 2025
 - [x] SDK upgrades (Clerk, Stripe, Supabase) - January 28, 2025
@@ -72,12 +104,6 @@
   - Fixed subscription endpoint paths
   - Fixed team credit endpoint structure
   - Standardized device headers
-
-### September 2025
-- [x] CLERK_WEBHOOK_ICRAFT configured in Zuplo - September 1
-- [x] Clerk v5 Migration verified (v5.45.0) - September 1
-- [x] Backend API Compilation verified - September 1
-- [x] React Hooks Violation fixed in CanvasPreview.tsx - September 1
 
 ## 📊 Progress Overview
 

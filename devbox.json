@@ -49,7 +49,7 @@
       "MISSING_DEPS=false",
       "",
       "# Check each critical dependency",
-      "for pkg in torch vllm transformers accelerate modelscope pillow boto3; do",
+      "for pkg in torch vllm transformers accelerate modelscope pillow boto3 FlagEmbedding supabase; do",
       "  # Handle special case: pillow imports as PIL",
       "  import_name=$pkg",
       "  if [ \"$pkg\" = \"pillow\" ]; then",
@@ -65,7 +65,7 @@
       "if [ \"$MISSING_DEPS\" = true ]; then",
       "  echo 'Installing missing dependencies...'",
       "  pip install -q torch torchvision --index-url https://download.pytorch.org/whl/cu121 2>/dev/null",
-      "  pip install -q vllm transformers accelerate 'modelscope>=1.18.1' pillow boto3 2>/dev/null",
+      "  pip install -q vllm transformers accelerate 'modelscope>=1.18.1' pillow boto3 FlagEmbedding supabase 2>/dev/null",
       "fi",
       "",
       "# Note: FlashAttention is not compatible with PyTorch 2.7+ due to ABI changes",
@@ -163,7 +163,19 @@
       "  elif [ \"$BACKEND\" = \"mlx\" ]; then",
       "    echo '   python3 -m mlx_lm.server --model mlx-community/Qwen2.5-VL-7B-4bit  # MLX'",
       "  fi",
-      "fi"
+      "fi",
+      "",
+      "# Show image processing pipeline commands",
+      "echo ''",
+      "echo '🖼️  Image Processing Pipeline:'",
+      "echo '   cd backend/scripts'",
+      "echo '   ./process-pipeline.sh status      # Check pipeline status'",
+      "echo '   ./process-pipeline.sh full        # Run complete pipeline'",
+      "echo '   ./process-pipeline.sh categorize  # Process images with Qwen2.5-VL'",
+      "echo '   ./process-pipeline.sh embeddings  # Generate BGE-M3 embeddings'",
+      "echo '   ./process-pipeline.sh deploy      # Deploy to Supabase databases'",
+      "echo ''",
+      "echo '📚 For more info: cat backend/scripts/README_IMAGE_PIPELINE.md'"
     ]
   },
   "env": {

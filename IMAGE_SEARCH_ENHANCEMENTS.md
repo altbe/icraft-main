@@ -5,17 +5,52 @@ This document outlines the complete implementation plan for unifying and enhanci
 
 ## Current State Analysis
 
-### Issues Identified
-1. **UI Inconsistency**: Different user experiences between Pixabay and custom image tabs
-2. **No Pagination**: Pixabay results show all at once, causing performance issues
-3. **Missing i18n**: Image metadata not localized for Spanish users
-4. **Poor Discovery**: No sample images or categories to guide users
-5. **No Caching**: Every search hits the API, increasing latency and costs
+### ✅ Phase 1: Database Foundation - COMPLETED
+1. **Database Schema**: All tables deployed to both prod and non-prod environments
+   - `custom_images` table with BGE-M3 embedding column (vector(1024))
+   - `custom_images_translations` with full-text search support
+   - `categories` and `categories_translations` tables for i18n
+   - pgvector extension with IVFFlat indexes
+2. **Data Migration**: Successfully deployed
+   - 1,196 BGE-M3 embeddings generated and stored
+   - 2,392 translations (1,196 English + 1,196 Spanish)
+   - 20 categories with full i18n support (added 8 missing categories)
+   - All referential integrity constraints satisfied
+3. **Stored Procedures**: Deployed to both environments
+   - `search_custom_images_vector` - Enhanced search with vector support (vector search disabled pending query embeddings)
+   - `get_featured_images_i18n` - Category samples with translations
+   - Dropped legacy `search_custom_images` function
+4. **API Integration**: Backend fully updated
+   - `icraft-images.ts` using new `search_custom_images_vector` function
+   - Language parameter extraction from query string
+   - Removed deprecated `icraft-custom-images.ts` module
+5. **Processing Scripts**: Created and tested
+   - `generate-bge-m3-embeddings.py` - Generates BGE-M3 embeddings
+   - `deploy-jsonl-to-supabase.py` - Deploys embeddings to both databases
+   - `deploy-translations.py` - Deploys i18n translations
+   - `process-pipeline.sh` - Orchestrator for complete pipeline
+
+### 🚧 Phase 2: Query Embeddings - NEXT PRIORITY
+1. **Query Embedding Generation**: Need to implement
+   - Option 1: Cloudflare Workers AI with @cf/baai/bge-m3 (preferred)
+   - Option 2: Edge function with BGE-M3 API
+   - Option 3: Real-time generation in Zuplo gateway
+2. **Vector Search Activation**: Ready but waiting for query embeddings
+   - Database has IVFFlat index on embedding column
+   - Search function has `p_use_vector` parameter (currently false)
+   - Cosine similarity threshold configured at 0.3
+
+### 📋 Remaining Tasks
+- **Phase 2**: API Unification with query embedding endpoint
+- **Phase 3**: Frontend service layer with caching
+- **Phase 4**: UI components with language toggle
+- **Phase 5**: Complete i18n translation files
+- **Phase 6**: CDN optimization with Cloudflare Workers
 
 ### Technical Constraints
 - **Pixabay API**: 100 requests/60 seconds rate limit, safesearch enabled
 - **R2 Storage**: Custom images hosted on Cloudflare R2 (img.icraftstories.com)
-- **Language Support**: Currently English only, need Spanish (ES) support
+- **Language Support**: English and Spanish implemented in backend
 - **PWA Requirements**: Must work offline with cached content
 
 ## Architecture Design
@@ -258,18 +293,22 @@ BEGIN
 END;
 $$;
 
--- NEW: Semantic search with vector embeddings for all queries
-CREATE OR REPLACE FUNCTION search_custom_images_semantic(
-  p_query TEXT DEFAULT '',
-  p_query_embedding vector(1024) DEFAULT NULL, -- Pre-computed from BGE-M3
+-- CURRENT: Enhanced search function with vector similarity support
+-- Status: IMPLEMENTED in both prod and non-prod as search_custom_images_vector
+-- Note: Vector search currently disabled, awaiting query embedding generation
+CREATE OR REPLACE FUNCTION search_custom_images_vector(
+  p_query TEXT DEFAULT NULL,
   p_language TEXT DEFAULT 'en',
   p_category_id TEXT DEFAULT NULL,
   p_page INTEGER DEFAULT 1,
-  p_per_page INTEGER DEFAULT 24
-) 
+  p_per_page INTEGER DEFAULT 20,
+  p_order_by TEXT DEFAULT 'relevance',
+  p_use_vector BOOLEAN DEFAULT false,
+  p_vector_threshold FLOAT DEFAULT 0.3
+)
 RETURNS TABLE (
-  id UUID,
-  url TEXT,
+  image_id UUID,
+  image_url TEXT,
   thumbnail_url TEXT,
   title TEXT,
   description TEXT,
@@ -280,7 +319,7 @@ RETURNS TABLE (
   height INTEGER,
   relevance_score REAL,
   total_count BIGINT
-) 
+)
 LANGUAGE plpgsql
 AS $$
 DECLARE
