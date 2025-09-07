@@ -1,0 +1,27 @@
+# Core dependencies for image processing with Qwen2.5-VL
+# Works on WSL2, Linux, and macOS
+
+# vLLM for high-performance inference (optional, will fallback to transformers)
+# Note: vLLM requires CUDA on Linux/WSL2, not available on macOS
+# Uncomment if you have CUDA:
+# vllm>=0.5.0
+
+# Transformers and PyTorch for model inference
+transformers>=4.40.0
+torch>=2.0.0
+torchvision>=0.15.0
+accelerate>=0.25.0
+
+# Image processing
+pillow>=10.0.0
+
+# Utilities
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Database (optional, for production)
+supabase>=2.0.0
+
+# Development tools
+ipython>=8.0.0
+jupyter>=1.0.0
