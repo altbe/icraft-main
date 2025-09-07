@@ -28,21 +28,38 @@ Service Layer (Caching + Rate Limiting)
     ↓
 API Gateway (Zuplo)
     ↓
+Query Enhancement (GPT-4o-mini)
+    ↓
 Parallel Search
     ├── Pixabay API (External)
     └── Supabase (Custom Images)
+        ├── Full-text Search (single words)
+        └── Vector Search (multi-word queries)
     ↓
 Unified Response
     ↓
 CDN (Cloudflare R2)
 ```
 
+### Vector Embedding Strategy
+- **Model**: @cf/baai/bge-m3 (multilingual, 100+ languages)
+- **Dimension**: 1024 (dense embeddings)
+- **Generation**: 
+  - Offline: Batch process image metadata locally with BGE-M3
+  - Online: Real-time query embeddings via Cloudflare Workers AI
+- **Storage**: pgvector extension in PostgreSQL
+- **Search**: Semantic vector search for ALL queries (better for social stories)
+- **Cost**: ~$0.03/month for 3,000 searches
+
 ## Phase 1: Database Layer
 
-### 1.1 Schema Design - Complete Translation Architecture
+### 1.1 Schema Design - Enhanced with Vector Embeddings
 
 ```sql
--- Main images table (language-agnostic) - ALREADY EXISTS
+-- Enable pgvector extension for semantic search
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Main images table (language-agnostic) - EXISTS, needs ALTER for embedding
 CREATE TABLE custom_images (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   
@@ -65,18 +82,23 @@ CREATE TABLE custom_images (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Categories master table (single source of truth)
-CREATE TABLE categories (
-  id TEXT PRIMARY KEY,  -- 'nature', 'animals', 'people', etc.
+-- Add embedding column to existing table (BGE-M3 dimensions)
+ALTER TABLE custom_images 
+ADD COLUMN IF NOT EXISTS embedding vector(1024);
+
+-- Categories master table - ALREADY EXISTS as custom_images_categories
+-- Updated with social story categories: routines, emotions, social, etc.
+CREATE TABLE custom_images_categories (
+  id TEXT PRIMARY KEY,  -- 'routines', 'emotions', 'social', etc.
   icon TEXT,            -- Icon identifier for UI
   sort_order INTEGER,   -- Display order
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Category translations (database-driven)
-CREATE TABLE categories_translations (
-  category_id TEXT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
+-- Category translations - ALREADY EXISTS as custom_images_categories_translations
+CREATE TABLE custom_images_categories_translations (
+  category_id TEXT NOT NULL REFERENCES custom_images_categories(id) ON DELETE CASCADE,
   language_code TEXT NOT NULL CHECK (language_code IN ('en', 'es')),
   name TEXT NOT NULL,        -- 'Nature' (en), 'Naturaleza' (es)
   description TEXT,          -- Optional category description
@@ -132,7 +154,11 @@ CREATE INDEX idx_custom_images_category ON custom_images(category_id) WHERE is_a
 CREATE INDEX idx_custom_images_created ON custom_images(created_at DESC) WHERE is_active = true;
 CREATE INDEX idx_translations_search ON custom_images_translations USING GIN(search_vector);
 CREATE INDEX idx_translations_lang ON custom_images_translations(language_code);
-CREATE INDEX idx_categories_active ON categories(id) WHERE is_active = true;
+
+-- Vector similarity index for semantic search (BGE-M3)
+CREATE INDEX idx_custom_images_embedding ON custom_images 
+USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 35); -- sqrt(1196) ≈ 35 for optimal performance
 ```
 
 ### 1.2 Search Functions
@@ -227,6 +253,85 @@ BEGIN
       WHEN 'relevance' THEN rank DESC
       ELSE rank DESC
     END
+  LIMIT p_per_page
+  OFFSET v_offset;
+END;
+$$;
+
+-- NEW: Semantic search with vector embeddings for all queries
+CREATE OR REPLACE FUNCTION search_custom_images_semantic(
+  p_query TEXT DEFAULT '',
+  p_query_embedding vector(1024) DEFAULT NULL, -- Pre-computed from BGE-M3
+  p_language TEXT DEFAULT 'en',
+  p_category_id TEXT DEFAULT NULL,
+  p_page INTEGER DEFAULT 1,
+  p_per_page INTEGER DEFAULT 24
+) 
+RETURNS TABLE (
+  id UUID,
+  url TEXT,
+  thumbnail_url TEXT,
+  title TEXT,
+  description TEXT,
+  category_id TEXT,
+  category_name TEXT,
+  tags TEXT[],
+  width INTEGER,
+  height INTEGER,
+  relevance_score REAL,
+  total_count BIGINT
+) 
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  v_offset INTEGER;
+  v_similarity_threshold FLOAT := 0.3; -- Lower threshold for better recall
+BEGIN
+  v_offset := (p_page - 1) * p_per_page;
+  
+  RETURN QUERY
+  WITH filtered_images AS (
+    SELECT 
+      ci.id,
+      ci.url,
+      ci.thumbnail_url,
+      COALESCE(cit.title, cit_en.title, 'Untitled') AS title,
+      COALESCE(cit.description, cit_en.description, '') AS description,
+      ci.category_id,
+      COALESCE(cat_t.name, cat_t_en.name, 'Uncategorized') AS category_name,
+      COALESCE(cit.tags, cit_en.tags, ARRAY[]::TEXT[]) AS tags,
+      ci.width,
+      ci.height,
+      CASE 
+        WHEN p_query = '' OR p_query_embedding IS NULL THEN 0
+        ELSE
+          -- Vector similarity score (cosine similarity, higher is better)
+          1 - (ci.embedding <=> p_query_embedding)
+      END AS rank,
+      COUNT(*) OVER() AS total
+    FROM custom_images ci
+    LEFT JOIN custom_images_translations cit 
+      ON ci.id = cit.image_id AND cit.language_code = p_language
+    LEFT JOIN custom_images_translations cit_en 
+      ON ci.id = cit_en.image_id AND cit_en.language_code = 'en'
+    LEFT JOIN custom_images_categories_translations cat_t
+      ON ci.category_id = cat_t.category_id AND cat_t.language_code = p_language
+    LEFT JOIN custom_images_categories_translations cat_t_en
+      ON ci.category_id = cat_t_en.category_id AND cat_t_en.language_code = 'en'
+    WHERE 
+      ci.is_active = true
+      AND ci.is_safe = true
+      AND (p_category_id IS NULL OR ci.category_id = p_category_id)
+      AND (
+        p_query = '' OR
+        p_query_embedding IS NULL OR
+        -- Semantic search with embeddings (always used when embedding provided)
+        (ci.embedding IS NOT NULL AND
+         (ci.embedding <=> p_query_embedding) < v_similarity_threshold)
+      )
+  )
+  SELECT * FROM filtered_images
+  ORDER BY rank DESC
   LIMIT p_per_page
   OFFSET v_offset;
 END;
@@ -510,6 +615,50 @@ export async function searchImages(request: ZuploRequest, context: ZuploContext)
       'Vary': 'Accept-Language'
     }
   });
+}
+
+// Generate query embeddings using BGE-M3 for multilingual semantic search
+export async function generateQueryEmbedding(request: ZuploRequest, context: ZuploContext) {
+  const { query } = await request.json();
+  
+  if (!query) {
+    return HttpProblems.badRequest(request, context, { detail: 'Query required' });
+  }
+  
+  try {
+    // Generate embedding using BGE-M3 via Cloudflare Workers AI
+    // BGE-M3 handles 100+ languages automatically - no language param needed
+    // It understands semantic relationships: "angry" ≈ "upset" ≈ "enojado"
+    const embeddingResponse = await env.AI.run(
+      '@cf/baai/bge-m3',
+      {
+        text: [query], // BGE-M3 accepts array of texts
+      }
+    );
+    
+    return new Response(JSON.stringify({ 
+      embedding: embeddingResponse.data[0], // 1024-dim vector from BGE-M3
+      query: query,
+      model: 'bge-m3'
+    }), {
+      status: 200,
+      headers: { 
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=300' // Cache for 5 min
+      }
+    });
+  } catch (error) {
+    context.log.error('Embedding generation failed', { error });
+    // Fallback to category browsing without embedding
+    return new Response(JSON.stringify({ 
+      embedding: null,
+      query: query,
+      model: 'none'
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }
 
 // Featured images endpoint
@@ -1363,13 +1512,104 @@ if (features.unifiedImageSearch) {
 | Performance impact | Load testing | Scale resources |
 | User confusion | A/B testing | Feature flag |
 
+## Vector Embedding Implementation Summary
+
+### Overview
+This enhanced design incorporates semantic search capabilities using vector embeddings from Qwen2.5-VL-7B, enabling better multi-word query understanding for social story image searches.
+
+### Key Enhancements
+
+#### 1. Hybrid Search Strategy
+- **Single-word queries**: Use existing full-text search (fast, precise)
+- **Multi-word queries**: Use vector similarity search with embeddings
+- **Threshold**: Cosine distance < 0.5 for relevance
+
+#### 2. Query Processing Pipeline
+```
+User Query → Word Count Check → Route Decision
+                ↓                      ↓
+         Single Word            Multi-Word
+                ↓                      ↓
+         Full-text Search      Query Expansion (GPT-4o-mini)
+                                       ↓
+                                Generate Embedding (Qwen2.5-VL)
+                                       ↓
+                                Vector Similarity Search
+```
+
+#### 3. Data Processing Updates
+- **Batch Processing**: 1,196 images already categorized with social story topics
+- **Embedding Generation**: Add Qwen2.5-VL embeddings (768-dim) to each image
+- **Storage**: PostgreSQL with pgvector extension
+- **Index**: IVFFlat index for efficient similarity search
+
+#### 4. Database Schema Changes
+```sql
+-- Enable vector support
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Add embedding column
+ALTER TABLE custom_images 
+ADD COLUMN IF NOT EXISTS embedding vector(768);
+
+-- Create similarity index
+CREATE INDEX idx_custom_images_embedding ON custom_images 
+USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100);
+```
+
+#### 5. API Integration
+- New `/expand-query` endpoint for dynamic query enhancement
+- Modified search to use hybrid approach based on query complexity
+- Embedding generation via vLLM API at `http://localhost:8000/v1/embeddings`
+
+### Implementation Steps
+
+1. **Schema Migration** (Non-prod first)
+   - Enable pgvector extension
+   - Add embedding column to custom_images
+   - Create vector similarity index
+
+2. **Generate Embeddings**
+   - Install BGE-M3 locally for batch processing
+   - Process existing 1,196 images with BGE-M3
+   - Store 1024-dimensional vectors
+
+3. **Deploy Search Functions**
+   - Deploy search_custom_images_semantic function
+   - Test with sample queries in Spanish/English
+   - Validate performance (~400-600ms total)
+
+4. **API Updates**
+   - Deploy embedding generation endpoint using Cloudflare Workers AI
+   - Update search endpoint to use semantic search
+   - Add caching for frequent queries (5 min TTL)
+
+5. **Frontend Integration**
+   - Call embedding endpoint for ALL searches
+   - Pass embedding to search function
+   - Display results with relevance scoring
+
+### Performance Considerations
+- BGE-M3 embedding generation: ~100-300ms
+- Vector similarity search: ~100ms
+- Total search latency: ~400-600ms (acceptable)
+- Embeddings pre-computed offline for images
+- IVFFlat index tuned for ~1,200 images (lists=35)
+
+### Testing Strategy
+- Test multilingual queries: "angry" vs "enojado"
+- Verify semantic matches: "school" finds "classroom", "teacher"
+- Test without language parameter (BGE-M3 auto-detects)
+- Measure precision/recall improvements
+
 ## Next Actions
 
-1. **Immediate**: Deploy database schema to development
-2. **Next**: Implement search stored procedures
-3. **Then**: Update API endpoints with unified search
-4. **Finally**: Build frontend components incrementally
+1. **Immediate**: Deploy database schema with pgvector (1024 dims) to non-prod
+2. **Next**: Generate BGE-M3 embeddings for all 1,196 processed images
+3. **Then**: Deploy semantic search function and test
+4. **Finally**: Update API with BGE-M3 embedding endpoint
 
 ## Conclusion
 
-This plan emphasizes incremental elaboration with clear task dependencies and validation gates. Each phase builds upon the previous, allowing for continuous refinement based on real usage data.
+This plan emphasizes incremental elaboration with semantic search capabilities via vector embeddings. The hybrid approach maintains fast performance for simple queries while enabling intelligent multi-word understanding for complex searches, perfectly suited for social story content discovery.

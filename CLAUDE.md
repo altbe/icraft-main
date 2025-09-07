@@ -28,51 +28,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 🚧 In Progress / Next Steps
 
-#### Phase 1: Database Layer (Remaining)
-- [ ] Deploy `search_custom_images()` function to both prod and non-prod databases
-- [ ] Create full i18n schema with translation tables
-- [ ] Add categories master table with EN/ES translations
-- [ ] Implement featured images and category samples functions
+#### Phase 1: Vector Embedding Implementation
+- [ ] Deploy pgvector extension and schema to non-prod (1024 dims for BGE-M3)
+- [ ] Install BGE-M3 locally for batch processing
+- [ ] Generate BGE-M3 embeddings for 1,196 processed images
+- [ ] Create SQL generator script to convert embeddings to UPDATE statements
+- [ ] Deploy `search_custom_images_semantic()` function to databases
+- [ ] Test multilingual semantic search (Spanish/English)
 
-#### Phase 2: API Unification
+#### Phase 2: API Integration
+- [ ] Deploy BGE-M3 embedding endpoint using Cloudflare Workers AI
+- [ ] Update search endpoint to use semantic search with embeddings
+- [ ] Implement 5-minute cache for frequent queries
+- [ ] Add fallback to category browsing if embedding fails
 - [ ] Unified `/v1/images/search` endpoint for both Pixabay + custom images
-- [ ] Featured images endpoint with i18n support
-- [ ] Rate limiting implementation (100 req/60s)
-- [ ] Proper cache headers (Cache-Control, Vary)
 
-#### Phase 3: Frontend Service Layer
-- [ ] Client-side caching with TTL
-- [ ] IndexedDB schema for offline image storage
-- [ ] Background sync for image searches
-- [ ] Memory cache invalidation on language change
+#### Phase 3: Frontend Integration  
+- [ ] Update search service to call embedding endpoint for ALL queries
+- [ ] Pass 1024-dim embedding vector to search function
+- [ ] Display results with semantic relevance scoring
+- [ ] Remove language-specific search logic (BGE-M3 is multilingual)
 
-#### Phase 4: UI Components
-- [ ] Unified search interface mixing both sources
-- [ ] Category pills filter component
-- [ ] Source labels on mixed image grid
-- [ ] Pagination component for large result sets
-- [ ] Empty state with search suggestions
+#### Phase 4: Testing & Optimization
+- [ ] Test multilingual queries: "angry" vs "enojado" 
+- [ ] Verify semantic matches: "school" finds "classroom", "teacher"
+- [ ] Measure search latency (target: ~400-600ms total)
+- [ ] Test fallback to categories when embedding fails
+- [ ] Load test with concurrent searches
 
-#### Phase 5: Internationalization
-- [ ] Complete EN/ES translation files for image search
-- [ ] Dynamic language switching with result refresh
-- [ ] Localized category names and descriptions
-
-#### Phase 6: CDN Optimization
-- [ ] Cloudflare Worker for image transformations
-- [ ] Automatic thumbnail generation
-- [ ] WebP conversion for optimal loading
-
-### Testing & Deployment
-- [ ] Run new Playwright tests in CI/CD pipeline
-- [ ] Test search performance with both image sources
-- [ ] Verify Spanish translations quality
-- [ ] Load test unified search endpoint
+#### Phase 5: Production Deployment
+- [ ] Deploy pgvector schema to production
+- [ ] Batch update all images with BGE-M3 embeddings
+- [ ] Deploy semantic search function to production
+- [ ] Monitor Cloudflare Workers AI costs (~$0.03/month)
 
 ### Notes
-- Full implementation plan in `IMAGE_SEARCH_ENHANCEMENTS.md`
-- MLX processing scripts can process additional image batches as needed
-- Database function needs deployment before full testing
+- Full implementation plan in `IMAGE_SEARCH_ENHANCEMENTS.md` (updated with BGE-M3 design)
+- BGE-M3 provides multilingual semantic search without OpenAI dependency
+- Cost: ~$0.03/month for 3,000 searches (78% savings vs GPT-4o-mini)
+- Schema migration SQL ready: `backend/scripts/add-vector-embeddings.sql`
 
 ## Project Overview
 
