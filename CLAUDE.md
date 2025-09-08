@@ -279,8 +279,8 @@ The backend uses **branch-based deployment** with automatic Zuplo deployments:
 
 #### Branch-to-Environment Mapping
 ```
-develop branch → Development (unico-api-develop-551bdfd.d2.zuplo.dev)
-preview branch → QA (unico-api-preview-551bdfd.d2.zuplo.dev)
+develop branch → Development (unico-api-develop-b2f4ce8.zuplo.app)
+preview branch → QA (unico-api-preview-27dea59.zuplo.app)
 main branch    → Production (api.icraftstories.com)
 ```
 
