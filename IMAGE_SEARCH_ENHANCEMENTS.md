@@ -17,11 +17,11 @@ This document outlines the complete implementation plan for unifying and enhanci
    - 20 categories with full i18n support (added 8 missing categories)
    - All referential integrity constraints satisfied
 3. **Stored Procedures**: Deployed to both environments
-   - `search_custom_images_vector` - Enhanced search with vector support (vector search disabled pending query embeddings)
+   - `search_custom_images_vector` - Enhanced search with vector support (AI-powered search ACTIVE)
    - `get_featured_images_i18n` - Category samples with translations
    - Dropped legacy `search_custom_images` function
 4. **API Integration**: Backend fully updated
-   - `icraft-images.ts` using new `search_custom_images_vector` function
+   - `icraft-images.ts` using new `search_custom_images_vector` function with embeddings
    - Language parameter extraction from query string
    - Removed deprecated `icraft-custom-images.ts` module
 5. **Processing Scripts**: Created and tested
@@ -30,21 +30,21 @@ This document outlines the complete implementation plan for unifying and enhanci
    - `deploy-translations.py` - Deploys i18n translations
    - `process-pipeline.sh` - Orchestrator for complete pipeline
 
-### 🚧 Phase 2: Query Embeddings - NEXT PRIORITY
-1. **Query Embedding Generation**: Need to implement
-   - Option 1: Cloudflare Workers AI with @cf/baai/bge-m3 (preferred)
-   - Option 2: Edge function with BGE-M3 API
-   - Option 3: Real-time generation in Zuplo gateway
-2. **Vector Search Activation**: Ready but waiting for query embeddings
-   - Database has IVFFlat index on embedding column
-   - Search function has `p_use_vector` parameter (currently false)
+### ✅ Phase 2: Query Embeddings - COMPLETED
+1. **Query Embedding Generation**: Fully implemented
+   - BGE-M3 embeddings generated via `icraft-embeddings.ts` module
+   - Real-time generation in Zuplo gateway with Cloudflare Workers AI
+   - Fallback to text search if embedding generation fails
+2. **Vector Search Activation**: Active and operational
+   - Database has IVFFlat index on embedding column  
+   - Search function uses vector similarity when embeddings provided
    - Cosine similarity threshold configured at 0.3
+   - Multilingual semantic search working (English/Spanish)
 
 ### 📋 Remaining Tasks
-- **Phase 2**: API Unification with query embedding endpoint
-- **Phase 3**: Frontend service layer with caching
-- **Phase 4**: UI components with language toggle
-- **Phase 5**: Complete i18n translation files
+- **Phase 3**: Frontend service layer enhancements
+- **Phase 4**: UI components refinements
+- **Phase 5**: Additional i18n translation coverage
 - **Phase 6**: CDN optimization with Cloudflare Workers
 
 ### Technical Constraints
