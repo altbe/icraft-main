@@ -23,7 +23,8 @@
     "librsvg@latest",
     "pkg-config@latest",
     "cairo@latest",
-    "imagemagick@latest"
+    "imagemagick@latest",
+    "playwright@latest"
   ],
   "shell": {
     "init_hook": [
@@ -143,10 +144,10 @@
       "  npm install --prefix \"$HOME/.npm-global\" -g @zuplo/cli 2>/dev/null || echo 'zuplo CLI may need to be installed separately'",
       "fi",
       "",
-      "if ! command -v playwright >/dev/null 2>&1; then",
-      "  echo 'Installing playwright locally...'",
-      "  npm install --prefix \"$HOME/.npm-global\" -g @playwright/test 2>/dev/null || echo 'playwright may need to be installed separately'",
-      "fi",
+      "# Install Playwright browsers and dependencies",
+      "echo 'Installing Playwright browsers and dependencies...'",
+      "npx playwright install-deps 2>/dev/null || echo 'Playwright dependencies installation may need manual intervention'",
+      "npx playwright install 2>/dev/null || echo 'Playwright browsers installation may need manual intervention'",
       "",
       "# Auto-detect GPU and configure LLM backend",
       "echo 'Detecting hardware configuration for LLM inference...'",

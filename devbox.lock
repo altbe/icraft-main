@@ -1082,6 +1082,54 @@
         }
       }
     },
+    "playwright@latest": {
+      "last_modified": "2025-07-28T17:09:23Z",
+      "resolved": "github:NixOS/nixpkgs/648f70160c03151bc2121d179291337ad6bc564b#playwright",
+      "source": "devbox-search",
+      "version": "1.54.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/l76xj8b3d95v35d03qxnmr6dwznmr280-playwright-core-1.54.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/l76xj8b3d95v35d03qxnmr6dwznmr280-playwright-core-1.54.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/xq703xs7d0r96x1xfficyxw4p1hdqjjq-playwright-core-1.54.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/xq703xs7d0r96x1xfficyxw4p1hdqjjq-playwright-core-1.54.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wm3fl7l374x5p8v2ra88lqns593y078h-playwright-core-1.54.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/wm3fl7l374x5p8v2ra88lqns593y078h-playwright-core-1.54.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/r84yp3fblwjhn17kplyh0a220v97hy9k-playwright-core-1.54.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/r84yp3fblwjhn17kplyh0a220v97hy9k-playwright-core-1.54.1"
+        }
+      }
+    },
     "postgresql@16": {
       "last_modified": "2024-12-22T08:27:48Z",
       "plugin_version": "0.0.2",

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "mcp__supabase__apply_migration",
+      "WebSearch",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__list_tables"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase",
+    "stripe-test",
+    "stripe-live",
+    "playwright"
+  ]
+}
