@@ -14,10 +14,16 @@ accelerate>=0.25.0
 
 # Image processing
 pillow>=10.0.0
+cairosvg>=2.7.0  # SVG to raster conversion
+svglib>=1.5.1    # SVG parsing and manipulation
 
 # Utilities
 requests>=2.31.0
 python-dotenv>=1.0.0
+tqdm>=4.66.0     # Progress bars for batch processing
+
+# Cloud storage
+boto3>=1.28.0    # AWS S3/R2 uploads
 
 # Database (optional, for production)
 supabase>=2.0.0
