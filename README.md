@@ -38,6 +38,10 @@ npm run build           # Build both projects
 npm run test            # Run all tests
 npm run lint            # Lint both projects
 npm run clean           # Clean build artifacts
+
+# Browser Testing with Playwright
+node test-browsers.js   # Test Chromium and Firefox browsers
+npm run playwright:install # Install/update Playwright browsers
 ```
 
 ### Repository Management

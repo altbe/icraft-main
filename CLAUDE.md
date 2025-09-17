@@ -24,7 +24,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Updated PWA service worker utilities
 
 #### ✅ Configuration
-- Added `.mcp.json` with Stripe and Supabase MCP servers (excluded from git)
+- Added `.mcp.json` with Stripe, Supabase, and Playwright MCP servers (excluded from git)
 
 ### ✅ Recently Completed (2025-01-08)
 
@@ -36,6 +36,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - ✅ **Multilingual**: Language-agnostic embeddings work for English/Spanish
 - ✅ **Performance**: ~400-600ms total search latency achieved
 - ✅ **Fallback**: Graceful degradation to text search if embedding fails
+
+### ✅ Testing Infrastructure (2025-01-17)
+
+#### Playwright Browser Testing
+- **Dynamic Version Detection**: No hardcoded browser versions for better cross-environment support
+- **Auto-Installation**: Browsers install automatically on `devbox shell` if missing
+- **MCP Integration**: Playwright MCP server configured for browser automation
+- **Cross-Platform**: Works on WSL2, Ubuntu, and other Linux environments
+- **Test Scripts**:
+  - `test-browsers.js` - Test Chromium and Firefox browsers
+  - `scripts/install-playwright-browsers.sh` - Dynamic browser installer with `--check` mode
 
 ### 🚧 In Progress / Next Steps
 
