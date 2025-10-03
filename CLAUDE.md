@@ -238,12 +238,23 @@ npm run stripe:sync-prod-to-test     # Sync Stripe products from prod to test
 
 ### Key Architectural Patterns
 
-1. **Offline-First PWA**: IndexedDB storage with background sync to cloud
-2. **API-Level Authentication**: Clerk JWT validation in Zuplo, not database RLS
-3. **Stripe Integration**: Direct database access via Supabase Stripe wrapper
-4. **Team Collaboration**: Team-owned stories with shared credit pools
-5. **Multi-Device Sync**: Conflict resolution with last-write-wins strategy
-6. **AI-Powered Content**: Story and image generation with credit-based usage
+1. **Database-First Backend Logic**: Core business logic implemented in Supabase stored procedures
+   - Subscription management via `pg_cron` and database functions (NOT API endpoints)
+   - Credit allocation, state transitions, audit trails in database layer
+   - API endpoints only for read operations or frontend-triggered actions
+   - Scheduled jobs run directly in PostgreSQL via `pg_cron` extension
+
+2. **Offline-First PWA**: IndexedDB storage with background sync to cloud
+
+3. **API-Level Authentication**: Clerk JWT validation in Zuplo, not database RLS
+
+4. **Stripe Integration**: Direct database access via Supabase Stripe wrapper
+
+5. **Team Collaboration**: Team-owned stories with shared credit pools
+
+6. **Multi-Device Sync**: Conflict resolution with last-write-wins strategy
+
+7. **AI-Powered Content**: Story and image generation with credit-based usage
 
 ## Code Style Guidelines
 
@@ -460,3 +471,4 @@ npm run rollback:production  # Interactive selection
 cd backend
 npm run stripe:sync-prod-to-test
 ```
+- always use playwright-mcp before playwright
