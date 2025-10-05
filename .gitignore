@@ -26,6 +26,17 @@ node_modules/
 
 .mcp.json
 
+# Playwright MCP
+.playwright-mcp/
+
+# Test files
+test-*.html
+test-*.png
+
+# Documentation drafts
+IMAGE_*.md
+AI_IMAGE_*.md
+
 # Python
 venv/
 __pycache__/
