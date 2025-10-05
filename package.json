@@ -44,5 +44,8 @@
     "url": "https://github.com/altbe/icraft-main.git"
   },
   "author": "iCraftStories Team",
-  "license": "Private"
+  "license": "Private",
+  "dependencies": {
+    "playwright": "latest"
+  }
 }
