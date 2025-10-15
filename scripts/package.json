@@ -1,0 +1,13 @@
+{
+  "name": "icraft-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Utility scripts for iCraftStories story processing",
+  "scripts": {
+    "llm-parse": "node llm-parse-stories.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "openai": "^4.77.3"
+  }
+}

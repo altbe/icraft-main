@@ -258,12 +258,24 @@ npm run stripe:sync-prod-to-test     # Sync Stripe products from prod to test
 
 ## Code Style Guidelines
 
+### Universal Patterns
+
+#### Async Operations - ALWAYS Wait for Completion
+**CRITICAL**: Never use arbitrary timeouts to wait for operations. Always wait for actual completion events with timeout only as exception fallback.
+
+❌ **Wrong**: `await upload(); await new Promise(r => setTimeout(r, 1000)); // hope it's done?`
+
+✅ **Correct**: Wait for actual event (`onload`, callback, promise resolution) with timeout only for hung/error cases
+
+See `frontend/CLAUDE.md` → "Async Operations Pattern" for detailed examples and implementation.
+
 ### Frontend
 - **TypeScript**: Strict typing, avoid `any`, use path aliases (`@/*`)
 - **Components**: Function components with React hooks, PascalCase names
 - **Imports**: React first, external libraries, then local imports
 - **Styling**: Tailwind utilities with shadcn/ui components (never modify shadcn components directly)
 - **Error Handling**: ErrorBoundary for UI errors, unified notification system
+- **Async Operations**: Event-based waiting with exception fallback only (see Universal Patterns above)
 
 ### Backend
 - **Modules**: ESM syntax (`type: "module"`)
@@ -271,6 +283,7 @@ npm run stripe:sync-prod-to-test     # Sync Stripe products from prod to test
 - **Error Handling**: try/catch with context.log.error(), return HttpProblems for API errors
 - **Auth**: Extract X-User-Id header, validate Clerk JWT tokens
 - **Testing**: @zuplo/test framework with chai assertions
+- **Async Operations**: Event-based waiting with exception fallback only (see Universal Patterns above)
 
 ## Deployment Automation
 

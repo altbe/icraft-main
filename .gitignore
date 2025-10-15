@@ -47,3 +47,10 @@ env/
 ENV/
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Scripts environment variables
+scripts/.env
+
+# Story processing temporary directories
+stories-tmp/
+story-tmp/
