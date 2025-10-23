@@ -2,7 +2,60 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Current Work Session (2025-01-06)
+## Current Work Session (2025-10-23)
+
+### ✅ Just Completed (2025-10-23)
+
+#### Team Member Requirements Documentation
+- Created comprehensive `TEAM_MEMBER_REQUIREMENTS.md` with all team collaboration requirements
+- Documented three member onboarding scenarios (new user, existing user, team owner)
+- Captured role-based permissions (owner/member)
+- Documented team credit management and story ownership
+- Added future enhancement roadmap
+- Updated CLAUDE.md with requirements documentation references
+
+#### One-Team-Per-User Enforcement (Database-First Implementation) ✅
+- **Discovered**: Database already enforces one-team-per-user constraint (migration 002)
+- **Gap Identified**: API doesn't validate before sending invitation (bad UX - invitation succeeds but fails on accept)
+- **Solution Implemented**: Full-stack pre-flight validation with database-first architecture
+- **Database Layer** (Migration 011):
+  - Created stored procedure `check_user_team_membership_by_email(p_email TEXT)`
+  - Three-tier email lookup: team_members.email → user_profiles.email → teams.owner_id
+  - Applied to both non-prod (jjpbogjufnqzsgiiaqwn) and prod (lgkjfymwvhcjvfkuidis)
+- **Backend API** (`backend/modules/clerk-team-invitations.ts:144-172`):
+  - Calls stored procedure before sending Clerk invitation
+  - Returns specific error codes: `USER_ALREADY_IN_TEAM`, `USER_ALREADY_OWNS_TEAM`
+  - Includes team metadata (name, ID, role) in error response
+  - Fail-open strategy: allows invitation if validation fails (better UX than blocking)
+- **Frontend UI** (`frontend/src/components/TeamInvitationDialog.tsx:96-106`):
+  - Detects error codes and extracts team metadata
+  - Shows informational error message with existing team name
+  - Translations added for English and Spanish
+- **Files Modified**:
+  - `backend/modules/clerk-team-invitations.ts` (added validation + security)
+  - `frontend/src/components/TeamInvitationDialog.tsx` (added error handling)
+  - `frontend/src/services/TeamInvitationService.ts` (added robust sanitization)
+  - `frontend/src/locales/en/teams.json` (added translations)
+  - `frontend/src/locales/es/teams.json` (added translations)
+- **Security Enhancements** (Zod-Based Validation):
+  - **Zod Schema Validation**: Type-safe email validation with `.email()` built-in
+  - **Frontend & Backend Consistency**: Same Zod schema logic on both sides
+  - **Sanitization Transform**: Auto-removes control chars, null bytes, HTML tags
+  - **Progressive Real-Time UX**: Green/yellow/red visual feedback as user types
+  - **Injection Prevention**: Custom `.refine()` detects XSS, protocol injection, directory traversal
+  - **Length Limits**: 3-320 characters (RFC 5322 compliant)
+  - **Detailed Error Messages**: Zod provides user-friendly validation feedback
+  - **Security Logging**: Backend logs failed validations with input preview
+  - **Input Masking**: Frontend strips dangerous characters in real-time
+- **Documentation Updated**:
+  - `TEAM_MEMBER_REQUIREMENTS.md` - REQ-INV-003 marked as implemented with security details
+  - `ONE_TEAM_PER_USER_SOLUTION.md` - implementation checklist updated with security phase
+
+---
+
+## Previous Work Sessions
+
+### Work Session (2025-01-06)
 
 ### Recently Completed Work
 
@@ -421,8 +474,15 @@ VITE_SENTRY_DSN            # Sentry error tracking
 
 ## Documentation References
 
+### Requirements Documentation
+- `TEAM_MEMBER_REQUIREMENTS.md` - **Complete team collaboration requirements** (onboarding, roles, permissions, credits, stories)
+- `TEAM_INVITATION_REFACTORING_PLAN.md` - Team invitation system refactoring plan
+- `TEAM_ONBOARDING_SCENARIOS.md` - Three member onboarding scenarios with test cases
+- `FEATURES.md` - Complete feature list
+
 ### Frontend Documentation
 - `frontend/docs/adr/` - Architecture Decision Records
+- `frontend/docs/adr/ADR-009-team-collaboration-architecture.md` - Team collaboration architecture
 - `frontend/docs/development/` - Development patterns and guides
 - `frontend/CLAUDE.md` - Frontend-specific guidance
 
@@ -431,6 +491,9 @@ VITE_SENTRY_DSN            # Sentry error tracking
 - `backend/docs-internal/operations/GITOPS-WORKFLOW.md` - GitOps workflow
 - `backend/docs-internal/decisions/` - Architecture decisions
 - `backend/docs-internal/integrations/` - Integration guides
+- `backend/docs-internal/integrations/CLERK-TEAM-INVITATIONS.md` - Clerk-first team invitations
+- `backend/docs-internal/integrations/Team credits.md` - Team credit management
+- `backend/docs-internal/integrations/Supabase Team stories.md` - Team story ownership
 - `backend/TARGET-STATE-ARCHITECTURE.md` - Target architecture
 - `backend/CLAUDE.md` - Backend-specific guidance
 
