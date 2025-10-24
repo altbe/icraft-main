@@ -51,6 +51,77 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `TEAM_MEMBER_REQUIREMENTS.md` - REQ-INV-003 marked as implemented with security details
   - `ONE_TEAM_PER_USER_SOLUTION.md` - implementation checklist updated with security phase
 
+#### Story & Credit Transfer Implementation (2025-10-24) ✅ Partially Complete
+
+**Status**: Team invitation flow fully working | Subscription upgrade flow needs implementation
+
+**What's Implemented:**
+- ✅ **Team Invitation Acceptance Transfer** - FULLY WORKING (deployed to prod & non-prod)
+  - Database: `onboard_team_member()` transfers ALL stories and credits automatically
+  - Database: `transfer_all_user_stories_to_team()` with full audit trail
+  - Database: `story_transfers` table for immutable transaction history
+  - Backend: Clerk webhook calls `onboard_team_member()` on `organizationMembership.created`
+  - Cancels individual/trial subscriptions automatically
+  - Logs comprehensive `team_join` activity with transfer counts
+  - Transaction history preserved (stories + credits)
+
+**What's Missing:**
+- ❌ **Subscription Upgrade Transfer** - NOT IMPLEMENTED
+  - Stripe webhook receives `customer.subscription.updated` but doesn't detect plan upgrades
+  - No logic to trigger `onboard_team_member()` when user upgrades individual → team/custom
+  - Users who upgrade subscription don't get automatic transfer
+- ⚠️ **User Communication** - MISSING
+  - No confirmation dialog before accepting invitation (user doesn't know transfer will happen)
+  - No success notification showing transfer results (X stories, Y credits transferred)
+  - No subscription upgrade warning about automatic transfer
+
+**Database Functions** (Deployed to both environments):
+- `onboard_team_member(p_user_id, p_team_id)` - backend/sql/team-member-onboarding.sql:23-162
+- `transfer_all_user_stories_to_team(p_user_id, p_team_id, p_description)` - backend/sql/story-transfer-implementation.sql:69-203
+- `transfer_all_user_credits_to_team(p_user_id, p_team_id, p_description)` - Referenced by onboard function
+- `story_transfers` audit table - backend/sql/story-transfer-implementation.sql:22-63
+
+**Backend Webhook Handlers**:
+- `clerk-organization-webhooks.ts:182-286` - Team invitation webhook (WORKING)
+- `webhook-manager.ts:325-407` - Stripe subscription webhook (MISSING UPGRADE DETECTION)
+
+**Migration Status**:
+- Non-Prod: 20251020084711 (onboarding), 20251022174649 (story transfer)
+- Production: 20251020085732 (onboarding), 20251022174744 (story transfer)
+
+**Migration Policy for Existing Users** (Established 2025-10-24):
+
+**Decision**: Only migrate users who have **active team subscriptions**. Individual users are excluded.
+
+**Criteria**:
+- ✅ **Migrate**: Users with `teams.subscription_status IN ('active', 'trialing', 'team')` OR user has active team/custom subscription
+- ❌ **Exclude**: Users with `teams.subscription_status = 'none'` (treated as individual users, even if they own a team entity)
+
+**Rationale**:
+- Team subscription = User is actively using team features → Stories should be team-owned
+- No team subscription = Individual user → Stories should stay personal, subscription should stay active
+- Prevents accidentally breaking individual users who own empty team entities
+
+**Implementation**:
+1. Run analysis query to identify users with active team subscriptions AND personal stories
+2. Create migration snapshot (rollback capability)
+3. Execute `onboard_team_member()` for each affected user
+4. Validate results (0 remaining personal stories for team users)
+
+**See**:
+- `NON_PROD_DATA_MIGRATION_PLAN.md` - Complete migration plan with queries and procedures
+- `STORY_CREDIT_TRANSFER_GAP_ANALYSIS.md` - Implementation details and gaps
+
+**Completed Work**:
+1. ✅ Implement subscription upgrade transfer detection (Priority 1) - COMPLETE
+2. ✅ Add frontend confirmation dialogs and success notifications (Priority 2) - COMPLETE
+3. ✅ Update Terms of Service and documentation (Priority 3) - COMPLETE
+4. ✅ Execute existing user migration in non-prod - COMPLETE (2025-10-24)
+   - 4 users migrated successfully
+   - 143 stories transferred to teams
+   - 1 subscription optimized (double-paying eliminated)
+   - 0 errors, 100% success rate
+
 ---
 
 ## Previous Work Sessions
