@@ -14,6 +14,63 @@
 
 ## Archive Structure
 
+### 2025-Q4-story-credit-transfer/ (8 files) **NEW**
+**Status**: ✅ Complete - Story and credit transfer fully implemented
+**Period**: October 2025
+**Archive Date**: 2025-10-26
+**Summary**: Complete implementation of automatic story and credit transfer on team join/upgrade
+
+#### Files:
+- `STORY_TRANSFER_IMPLEMENTATION_PLAN.md` - Complete implementation guide (1058 lines)
+- `STORY_TRANSFER_QUICK_START.md` - Quick start guide for implementation (239 lines)
+- `PRIORITY_1_2_COMPLETION_STATUS.md` - Priority 1 & 2 completion report (267 lines)
+- `ONE_TEAM_PER_USER_SOLUTION.md` - One-team-per-user enforcement solution (362 lines)
+- `STORY_CREDIT_TRANSFER_GAP_ANALYSIS.md` - Gap analysis for transfer implementation (361 lines)
+- `TEAM_ONBOARDING_SCENARIOS.md` - Three onboarding scenarios documentation (386 lines)
+- `TEAM_INVITATION_REFACTORING_PLAN.md` - Team invitation refactoring plan (966 lines)
+- `NON_PROD_DATA_MIGRATION_PLAN.md` - Non-prod data migration executed 2025-10-24 (594 lines)
+
+**Key Achievements**:
+- Automatic transfer of ALL stories and credits on team join
+- Database stored procedure `onboard_team_member()` deployed
+- Story transfer audit table `story_transfers` created
+- Non-prod migration successfully executed (4 users, 143 stories, 1 subscription)
+- Information consolidated into `TEAM_MEMBER_REQUIREMENTS.md`
+
+---
+
+### subscription-refactoring-proposals/ (3 files) **NEW**
+**Status**: ⚠️ Superseded - Proposals replaced by STRIPE_INTEGRATION_V2.md
+**Period**: October 2025
+**Archive Date**: 2025-10-26
+**Summary**: Subscription architecture refactoring proposals superseded by clean-slate design
+
+#### Files:
+- `SUBSCRIPTION_PLANS_REFACTORING.md` - Plan refactoring proposal (1377 lines)
+- `UNIFIED_SUBSCRIPTION_REFACTORING_PROPOSAL.md` - Unified architecture proposal (594 lines)
+- `FRONTEND_SYNC_MIGRATION_ANALYSIS.md` - Sync migration analysis (469 lines)
+
+**Why Archived**:
+- All proposals superseded by `STRIPE_INTEGRATION_V2.md` (clean-slate design)
+- Historical value for understanding decision evolution
+- Current architecture documented in STRIPE_INTEGRATION_V2.md
+
+---
+
+### 2025-Q3-search-features/ (5 files) **UPDATED**
+**Status**: ✅ Complete - AI-powered search deployed
+**Period**: July-September 2025
+**Summary**: Semantic image search with BGE-M3 embeddings
+
+#### Files:
+- `AI_IMAGE_HISTORY_MVP_DESIGN.md` - AI image history MVP design
+- `AI_SEARCH_MIGRATION_SUMMARY.md` - Search migration summary
+- `CATEGORY_CONSOLIDATION_PLAN.md` - Image category consolidation
+- `IMPLEMENTATION_SUMMARY.md` - Search implementation summary
+- `VECTOR_SEARCH_TEST_PLAN.md` - Vector search test plan (151 lines) **ADDED 2025-10-26**
+
+---
+
 ### 2025-Q4-crisp-integration/ (10 files)
 **Status**: ✅ Complete - CRISP chat integration deployed and stable
 **Period**: October 2025
@@ -30,6 +87,8 @@
 - `CRISP_PRIVACY_POLICY_UPDATES.md` - Privacy policy changes for CRISP
 - `CRISP_QUICK_START.md` - Quick start guide for CRISP integration
 - `CRISP_SINGLE_WEBSITE_CONFIG.md` - Single website configuration approach
+
+---
 
 ### 2025-Q4-team-collaboration/ (11 files)
 **Status**: ✅ Complete - Team collaboration features deployed
@@ -49,6 +108,8 @@
 - `TEAM_STORY_OWNERSHIP_FIX.md` - Story ownership bug fixes
 - `TEAM_STORY_OWNERSHIP_SUMMARY.md` - Story ownership implementation summary
 
+---
+
 ### 2025-Q4-subscription-migration/ (5 files)
 **Status**: ✅ Complete - Subscription plan refactoring deployed
 **Period**: October 2025
@@ -61,6 +122,8 @@
 - `PLAN_ID_MAPPING_IMPLEMENTATION.md` - Plan ID mapping implementation
 - `LEGACY_TEAM_CREDIT_MIGRATION_2025-10-20.md` - Legacy team credit migration
 
+---
+
 ### 2025-Q3-custom-images/ (4 files)
 **Status**: ✅ Complete - Custom images pipeline deployed
 **Period**: July-September 2025
@@ -72,16 +135,7 @@
 - `DATABASE_TRANSFORMATION_PLAN.md` - Database transformation plan
 - `BACKFILL_COMPLETED.md` - Image data backfill completion report
 
-### 2025-Q3-search-features/ (4 files)
-**Status**: ✅ Complete - AI-powered search deployed
-**Period**: July-September 2025
-**Summary**: Semantic image search with BGE-M3 embeddings
-
-#### Files:
-- `AI_IMAGE_HISTORY_MVP_DESIGN.md` - AI image history MVP design
-- `AI_SEARCH_MIGRATION_SUMMARY.md` - Search migration summary
-- `CATEGORY_CONSOLIDATION_PLAN.md` - Image category consolidation
-- `IMPLEMENTATION_SUMMARY.md` - Search implementation summary
+---
 
 ### completed-features/ (5 files)
 **Status**: ✅ Complete - Miscellaneous completed work
@@ -99,10 +153,40 @@
 
 ## Archive Statistics
 
-**Total Archived Files**: 39
-**Earliest Archive Date**: July 2025 (2025-Q3)
-**Latest Archive Date**: October 2025 (2025-Q4)
-**Archive Size**: ~39 documents covering 6 major feature areas
+**Total Archive Directories**: 8
+**Total Archived Files**: 56 files
+**Archive Period**: July 2025 - October 2025
+**Latest Archive Date**: 2025-10-26
+
+### Files by Category
+
+| Category | Files | Status |
+|----------|-------|--------|
+| Story/Credit Transfer | 8 | ✅ Complete |
+| Subscription Refactoring | 3 | ⚠️ Superseded |
+| Search Features | 5 | ✅ Complete |
+| CRISP Integration | 10 | ✅ Complete |
+| Team Collaboration | 11 | ✅ Complete |
+| Subscription Migration | 5 | ✅ Complete |
+| Custom Images | 4 | ✅ Complete |
+| Misc Completed | 5 | ✅ Complete |
+| **TOTAL** | **56** | |
+
+---
+
+## Recent Archiving Activity (2025-10-26)
+
+### Second Archiving Pass
+- **Added**: 2025-Q4-story-credit-transfer/ (8 files, 4,233 lines)
+- **Added**: subscription-refactoring-proposals/ (3 files, 2,440 lines)
+- **Updated**: 2025-Q3-search-features/ (+1 file: VECTOR_SEARCH_TEST_PLAN.md)
+- **Impact**: Reduced root directory from 24 to 12 markdown files (50% reduction)
+- **Documentation**: Created TOP_LEVEL_DOCS_REVIEW.md for analysis
+
+### First Archiving Pass (2025-10-26)
+- Created archive structure with 6 directories
+- Archived 39 completed documentation files
+- Created comprehensive archive READMEs
 
 ---
 
@@ -110,18 +194,20 @@
 
 ### Search by Feature
 ```bash
-# CRISP integration
-ls docs-archive/2025-Q4-crisp-integration/
+# Story/Credit Transfer
+ls docs-archive/2025-Q4-story-credit-transfer/
+
+# Subscription architecture
+ls docs-archive/subscription-refactoring-proposals/
 
 # Team collaboration
 ls docs-archive/2025-Q4-team-collaboration/
 
-# Subscription changes
-ls docs-archive/2025-Q4-subscription-migration/
-
-# Image features
-ls docs-archive/2025-Q3-custom-images/
+# Search features
 ls docs-archive/2025-Q3-search-features/
+
+# CRISP integration
+ls docs-archive/2025-Q4-crisp-integration/
 ```
 
 ### Search by Content
@@ -131,6 +217,9 @@ grep -r "team" docs-archive/
 
 # Find all docs mentioning "subscription"
 grep -r "subscription" docs-archive/
+
+# Find all docs mentioning "story transfer"
+grep -r "story transfer" docs-archive/
 ```
 
 ---
@@ -148,16 +237,44 @@ If archived documentation becomes relevant again:
 
 ---
 
-## Related Documentation
+## Current Active Documentation
 
-- **Active Documentation**: See main repo README.md and submodule CLAUDE.md files
-- **SQL Archive**: `backend/sql/archive/` for archived SQL files
-- **Backend Archive**: `backend/docs-archive/` for backend-specific archives
-- **Frontend Archive**: `frontend/docs-archive/` for frontend-specific archives
+After archiving, these files remain in the root directory:
+
+### Core Documentation (4)
+- `CLAUDE.md` - Claude Code development guidance
+- `README.md` - Project overview
+- `FEATURES.md` - Feature catalog
+- `TODO.md` - Task tracking
+
+### Architecture & Integration (3)
+- `SUPABASE_STRIPE_INTEGRATION_REVIEW.md` - Database/Stripe integration reference
+- `STRIPE_INTEGRATION_V2.md` - Clean-slate Stripe architecture
+- `TEAM_MEMBER_REQUIREMENTS.md` - Team collaboration requirements
+
+### Recent Audits (2)
+- `SQL_AUDIT_REPORT.md` - SQL function audit (2025-10-26)
+- `DOCUMENTATION_AUDIT_2025-10-26.md` - Documentation audit (2025-10-26)
+
+### Active Planning (2)
+- `TOS_IMPLEMENTATION_PLAN.md` - Terms of Service implementation (in progress)
+- `IMAGE_SEARCH_ENHANCEMENTS.md` - Image search monitoring (ongoing)
+
+### Setup Guides (1)
+- `PLAYWRIGHT_SETUP.md` - Playwright testing setup
+
+---
+
+## Related Archives
+
+- **Backend SQL Archive**: `backend/sql/archive/` - Archived SQL function definitions
+- **Backend Docs Archive**: `backend/docs-archive/` - Backend-specific documentation
+- **Backend MLX Archive**: `backend/mlx-archive/` - MLX experimentation files
+- **Frontend Archive**: `frontend/docs-archive/` - Frontend-specific documentation
 
 ---
 
 **Archive Created**: 2025-10-26
 **Last Updated**: 2025-10-26
 **Maintainer**: Development team
-**Review Schedule**: Annually or when restoring documents
+**Review Schedule**: Quarterly or after major feature releases
