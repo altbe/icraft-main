@@ -63,7 +63,13 @@
       "Bash(find:*)",
       "Bash(for file in /home/g/_zdev/icraft-main/backend/sql/*.sql)",
       "Bash(done)",
-      "mcp__playwright-mcp__browser_install"
+      "mcp__playwright-mcp__browser_install",
+      "Bash(while read file)",
+      "Bash(docs-archive/2025-Q4-team-collaboration )",
+      "Bash(docs-archive/2025-Q4-subscription-migration )",
+      "Bash(docs-archive/2025-Q3-custom-images )",
+      "Bash(docs-archive/2025-Q3-search-features )",
+      "Bash(docs-archive/completed-features)"
     ]
   },
   "enableAllProjectMcpServers": true,
