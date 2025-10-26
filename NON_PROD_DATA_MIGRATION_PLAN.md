@@ -6,6 +6,8 @@
 **Environment**: Non-Production Only (jjpbogjufnqzsgiiaqwn)
 **Executed**: 2025-10-24 14:53:35 UTC
 
+> 📝 **NOTE**: This migration was executed before the credit system consolidation (2025-10-25). Queries shown use the `credit_balances` view which has since been removed. The migration itself called `onboard_team_member()` which now uses the ledger model internally. See `backend/CREDIT_SYSTEM_CONSOLIDATED.md` for current architecture.
+
 ---
 
 ## Problem Statement

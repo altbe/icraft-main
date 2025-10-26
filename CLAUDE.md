@@ -380,6 +380,43 @@ npm run stripe:sync-prod-to-test     # Sync Stripe products from prod to test
 
 7. **AI-Powered Content**: Story and image generation with credit-based usage
 
+### Credit System Architecture (Consolidated 2025-10-25)
+
+**Pure Ledger Model** - All credit operations use INSERT-only transactions:
+
+**Core Principles:**
+- ✅ **Ledger-Based Balances** - Computed from `credit_transactions` table, no cached balances
+- ✅ **Database-First Attribution** - `get_user_team_id()` determines team vs. individual
+- ✅ **Auto-Detection** - Single API for all users (team members and individuals)
+- ✅ **Semantic Operations** - Specific functions for each business operation
+- ✅ **Validation** - `use_credits()` throws exception if insufficient balance
+
+**Credit Functions:**
+```typescript
+// Balance query (auto-detects team membership)
+const balance = await supabase.rpc('get_user_credit_balance', { p_user_id: userId });
+
+// Credit usage (with validation)
+await supabase.rpc('use_credits', {
+  p_user_id: userId, p_amount: 10, p_description: 'AI generation'
+});
+
+// Credit allocation
+await supabase.rpc('allocate_subscription_credits', { p_user_id: userId, p_amount: 300 });
+await supabase.rpc('allocate_trial_credits', { p_user_id: userId, p_amount: 30 });
+
+// Credit transfer (user → team)
+await supabase.rpc('transfer_all_user_credits_to_team', {
+  p_user_id: userId, p_team_id: teamId
+});
+```
+
+**Removed (2025-10-25):**
+- ❌ `get_team_credit_balance()`, `use_team_credits()`, `update_user_credit_balance()`
+- ❌ `/team/credits/*` endpoints - Use `/credits/*` (auto-detects team)
+
+**See:** `backend/CREDIT_SYSTEM_CONSOLIDATED.md` for complete details
+
 ## Code Style Guidelines
 
 ### Universal Patterns
@@ -558,15 +595,16 @@ VITE_SENTRY_DSN            # Sentry error tracking
 - `frontend/CLAUDE.md` - Frontend-specific guidance
 
 ### Backend Documentation
+- `backend/CREDIT_SYSTEM_CONSOLIDATED.md` - **Credit system architecture** (consolidated ledger model, 2025-10-25)
 - `backend/docs-internal/api-reference.md` - API documentation
 - `backend/docs-internal/operations/GITOPS-WORKFLOW.md` - GitOps workflow
 - `backend/docs-internal/decisions/` - Architecture decisions
 - `backend/docs-internal/integrations/` - Integration guides
 - `backend/docs-internal/integrations/CLERK-TEAM-INVITATIONS.md` - Clerk-first team invitations
-- `backend/docs-internal/integrations/Team credits.md` - Team credit management
 - `backend/docs-internal/integrations/Supabase Team stories.md` - Team story ownership
 - `backend/TARGET-STATE-ARCHITECTURE.md` - Target architecture
 - `backend/CLAUDE.md` - Backend-specific guidance
+- `backend/docs-archive/legacy-credit-system/` - **Archived** legacy credit documentation (do not use)
 
 ## Quick Start Guide
 

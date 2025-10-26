@@ -1,8 +1,10 @@
 # Team Member Requirements - Implementation Reference
 
 **Status**: Active Reference Document
-**Last Updated**: 2025-10-23
+**Last Updated**: 2025-10-25 (Updated for ledger model)
 **Purpose**: Comprehensive requirements documentation for team member features
+
+> ✅ **CREDIT SYSTEM**: This document uses the **pure ledger model**. All credit balances are computed from `credit_transactions` table using stored procedures. See `backend/CREDIT_SYSTEM_CONSOLIDATED.md` for details.
 
 ---
 
@@ -436,11 +438,12 @@ SELECT onboard_team_member('user_34QVci9hMiAU0rN3K6qB1mBbv8W', '<team_id>');
 
 **Database State After:**
 ```sql
--- User credits: 0
-SELECT credit_balance FROM user_profiles WHERE id = '<user_id>';
+-- User credits: 0 (no personal balance after transfer)
+SELECT get_user_credit_balance('<user_id>');
+-- Returns: 150 (team balance - user is now team member)
 
--- Team credits: +50
-SELECT credit_balance FROM teams WHERE id = '<team_id>';
+-- Team credits: +50 (from transferred personal credits)
+-- No separate query needed - get_user_credit_balance() auto-detects team membership
 
 -- Stories transferred
 SELECT COUNT(*) FROM stories WHERE user_id = '<user_id>' AND team_id = '<team_id>';
@@ -498,11 +501,12 @@ SELECT status FROM subscriptions WHERE user_id = '<user_id>';
 SELECT clerk_org_id FROM teams WHERE id = '<team_id>';
 -- Returns: org_clerk_xxx
 
--- Owner credits: 0
-SELECT credit_balance FROM user_profiles WHERE id = '<owner_id>';
+-- Owner credits: 0 (transferred to team)
+SELECT get_user_credit_balance('<owner_id>');
+-- Returns: 100 (team balance - owner is team member)
 
--- Team credits: 100
-SELECT credit_balance FROM teams WHERE id = '<team_id>';
+-- Team credits: 100 (from owner's transferred credits)
+-- No separate query needed - get_user_credit_balance() auto-detects team membership
 
 -- Personal stories: Still 3 (team_id = NULL)
 SELECT COUNT(*) FROM stories WHERE user_id = '<owner_id>' AND team_id IS NULL;
@@ -668,18 +672,33 @@ async useTeamCredits(teamId: string, amount: number): Promise<void> {
 
 **Requirements:**
 - Each team has shared credit balance
-- Credits tracked in `teams.credit_balance` column
+- Credits computed from `credit_transactions` table (ledger model)
 - All team members share the same pool
+- Balance retrieved via `get_user_credit_balance(user_id)` function
 - Credit operations logged in activities table
 - Complete audit trail for accountability
 
 **Database Schema:**
 ```sql
--- teams table
-credit_balance INTEGER DEFAULT 0 NOT NULL
+-- credit_transactions table (ledger model with full auditability)
+CREATE TABLE credit_transactions (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL,       -- ALWAYS set (identifies the actor)
+  team_id UUID NULL,           -- NULL = personal, NOT NULL = team transaction
+  amount INTEGER NOT NULL,     -- Positive = credit, Negative = debit
+  transaction_type TEXT NOT NULL,  -- 'usage', 'allocation', 'transfer_in', 'transfer_out'
+  description TEXT NOT NULL,
+  created_by UUID NOT NULL,    -- User who initiated (usually same as user_id)
+  metadata JSONB DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT NOW()
+);
 
--- Credit transactions logged in activities
-action_type = 'credit_used' | 'credit_added' | 'credit_transferred'
+-- Balance computed via function
+SELECT get_user_credit_balance('<user_id>');  -- Returns team balance if team member
+
+-- Auditability: Track which team member used credits
+SELECT * FROM credit_transactions
+WHERE team_id = '<team_id>' AND user_id = '<user_id>';
 ```
 
 **Credit Operations:**

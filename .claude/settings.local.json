@@ -48,7 +48,22 @@
       "Bash(timeout:*)",
       "Bash(cat:*)",
       "mcp__playwright-mcp__browser_press_key",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "mcp__stripe-test__list_customers",
+      "mcp__stripe-test__list_payment_intents",
+      "mcp__stripe-test__list_products",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Read(//home/g/Downloads/**)",
+      "mcp__supabase__get_project",
+      "mcp__supabase__list_migrations",
+      "WebFetch(domain:docs.crisp.chat)",
+      "Bash(git commit:*)",
+      "WebFetch(domain:help.crisp.chat)",
+      "Bash(find:*)",
+      "Bash(for file in /home/g/_zdev/icraft-main/backend/sql/*.sql)",
+      "Bash(done)",
+      "mcp__playwright-mcp__browser_install"
     ]
   },
   "enableAllProjectMcpServers": true,
