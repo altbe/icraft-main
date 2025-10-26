@@ -11,10 +11,10 @@
 
 ## Archived Audits
 
-### Documentation Audits (2 files) - 2025-10-26
+### Documentation Audits (4 files) - 2025-10-26
 
 **Archive Date**: 2025-10-26
-**Status**: ✅ Complete - All archiving recommendations executed
+**Status**: ✅ Complete - All archiving and analysis recommendations executed
 
 #### Files
 
@@ -39,18 +39,60 @@
      - 1 file → `docs-archive/2025-Q3-search-features/`
    - **Result**: Root directory reduced from 24 to 13 files
 
+3. **SQL_AUDIT_REPORT.md** (699 lines)
+   - **Purpose**: Audit of SQL files in `backend/sql/` directory
+   - **Scope**: Analyzed 34 database functions across 11 SQL files
+   - **Outcome**: Identified 83% obsolete code (34 of 41 functions not deployed)
+   - **Execution**: SQL archiving completed (commit 74999f0)
+     - 8 files → `backend/sql/archive/`
+     - 3 files marked as reference-only
+     - Created `backend/sql/README.md`
+   - **Result**: Clear separation of active (4), reference (3), and archived (8) SQL files
+   - **Value**: Documents function locations in migrations vs. SQL files
+
+4. **REMAINING_DOCS_ANALYSIS.md** (~500 lines)
+   - **Purpose**: Post-archiving analysis of 13 remaining top-level documents
+   - **Scope**: Comprehensive review of all active documentation after archiving
+   - **Outcome**: Identified TODO.md as outdated, recommended updates
+   - **Execution**: All recommendations executed (commit 03c5a36)
+     - Updated TODO.md with October 2025 achievements
+     - Updated FEATURES.md with recent features
+     - Enhanced IMAGE_SEARCH_ENHANCEMENTS.md with monitoring section
+     - Archived 2 audit documents (this and SQL_AUDIT_REPORT.md)
+   - **Result**: Root directory reduced from 13 to 10 active files
+
 ---
 
 ## Why These Were Archived
 
-### Planning Artifacts - Task Complete
-Both documents were **planning artifacts** created specifically for the October 26, 2025 documentation cleanup effort. Their purpose was to:
+### Planning & Analysis Artifacts - Tasks Complete
+All four documents were **planning and analysis artifacts** created specifically for the October 26, 2025 repository cleanup effort. Their purposes were to:
 1. Identify obsolete/completed documentation
-2. Categorize files by relevance
-3. Recommend archiving actions
-4. Provide execution plans
+2. Analyze SQL file organization
+3. Categorize files by relevance
+4. Recommend archiving actions
+5. Provide execution plans
+6. Review remaining documentation quality
 
 **All recommendations were executed**, making these documents historical snapshots only.
+
+### Specific Rationales
+
+**DOCUMENTATION_AUDIT_2025-10-26.md & TOP_LEVEL_DOCS_REVIEW.md**:
+- Created for documentation cleanup planning
+- Archiving completed across all 3 repos (64 files archived)
+- Superseded by current archive structure
+
+**SQL_AUDIT_REPORT.md**:
+- Created for SQL file cleanup and organization
+- Archiving completed (8 files moved to backend/sql/archive/)
+- Function locations now documented in backend/sql/README.md
+- Meta-analysis of repository code organization (not product documentation)
+
+**REMAINING_DOCS_ANALYSIS.md**:
+- Created for post-archiving quality review
+- All recommendations executed (TODO.md updated, FEATURES.md updated, etc.)
+- Meta-analysis of documentation quality (not product documentation)
 
 ### Value Preserved
 - Git history preserves complete audit trail
@@ -66,10 +108,15 @@ Both documents were **planning artifacts** created specifically for the October 
 
 ## Archiving Outcomes
 
-### Files Archived Total: 64 files
-- Main repo: 39 + 12 top-level = 51 files
+### Files Archived Total: 66 files
+- Main repo: 39 + 12 top-level + 2 analysis = 53 files
 - Backend: 8 files
 - Frontend: 5 files
+
+### Meta-Documents Archived: 4 files
+- Documentation audit reports (2)
+- SQL audit report (1)
+- Post-archiving analysis (1)
 
 ### Archive Structure Created
 ```
@@ -82,20 +129,20 @@ docs-archive/
 ├── 2025-Q4-story-credit-transfer/   (8 files)
 ├── subscription-refactoring-proposals/ (3 files)
 ├── completed-features/              (5 files)
-└── completed-audits/                (2 files) **NEW**
+└── completed-audits/                (4 files) **UPDATED**
 ```
 
 ### Impact
-- **Before**: 24 root-level markdown files
-- **After**: 13 root-level markdown files
-- **Reduction**: 46% cleaner root directory
-- **Result**: Clear separation of active vs. historical documentation
+- **Initial State**: 24 root-level markdown files
+- **After First Archiving**: 13 root-level markdown files (46% reduction)
+- **After Analysis Archiving**: 10 root-level markdown files (58% total reduction)
+- **Result**: Clean, focused documentation - only product/architecture docs remain
 
 ---
 
 ## Related Documentation
 
-### Current Active Documentation (13 files)
+### Current Active Documentation (10 files)
 - `CLAUDE.md` - Development guidance
 - `README.md` - Project overview
 - `FEATURES.md` - Feature catalog
@@ -103,12 +150,15 @@ docs-archive/
 - `SUPABASE_STRIPE_INTEGRATION_REVIEW.md` - Database reference
 - `STRIPE_INTEGRATION_V2.md` - Architecture design
 - `TEAM_MEMBER_REQUIREMENTS.md` - Team requirements
-- `SQL_AUDIT_REPORT.md` - SQL function reference
 - `TOS_IMPLEMENTATION_PLAN.md` - ToS implementation plan
 - `IMAGE_SEARCH_ENHANCEMENTS.md` - Image search monitoring
 - `PLAYWRIGHT_SETUP.md` - Testing setup
-- `REMAINING_DOCS_ANALYSIS.md` - Post-archiving analysis
-- `TOP_LEVEL_DOCS_REVIEW.md` - **ARCHIVED** (moved here)
+
+### Archived Analysis Documents (4 files in this directory)
+- `DOCUMENTATION_AUDIT_2025-10-26.md`
+- `TOP_LEVEL_DOCS_REVIEW.md`
+- `SQL_AUDIT_REPORT.md`
+- `REMAINING_DOCS_ANALYSIS.md`
 
 ### Main Archive Index
 - `docs-archive/README.md` - Complete archive index with all sections

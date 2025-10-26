@@ -69,7 +69,12 @@
       "Bash(docs-archive/2025-Q4-subscription-migration )",
       "Bash(docs-archive/2025-Q3-custom-images )",
       "Bash(docs-archive/2025-Q3-search-features )",
-      "Bash(docs-archive/completed-features)"
+      "Bash(docs-archive/completed-features)",
+      "Bash(mkdir:*)",
+      "Bash(for file in FRONTEND_SYNC_MIGRATION_ANALYSIS.md IMAGE_SEARCH_ENHANCEMENTS.md STRIPE_INTEGRATION_V2.md SUBSCRIPTION_PLANS_REFACTORING.md)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(head:*)",
+      "Bash(mv:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
