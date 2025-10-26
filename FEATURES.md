@@ -34,13 +34,16 @@ Based on comprehensive codebase analysis, here's a complete list of all end-user
 - **PDF Export**: Export stories as downloadable PDF files
 
 ### Image Library & Search
-- **Curated Custom Image Library**: Access professionally curated image collection
+- **Curated Custom Image Library**: Access professionally curated image collection (1,196 images)
 - **Pixabay Integration**: Search millions of free stock photos from the web
 - **Multi-Source Image Search**: Unified search across custom and web libraries
-- **Image Categorization**: Browse images by categories and themes
-- **Search & Filter**: Find images by keywords and tags
+- **AI-Powered Semantic Search**: BGE-M3 embeddings for multilingual semantic search (100+ languages)
+- **Vector Similarity Search**: Find images by meaning, not just keywords
+- **Image Categorization**: Browse images by 20+ categories with bilingual support
+- **Search & Filter**: Find images by keywords, tags, and semantic similarity
 - **Fallback Systems**: Offline access to cached image libraries
 - **Image Proxy Service**: Secure API-based image fetching without exposing keys
+- **Real-Time Query Embeddings**: Instant semantic search via Cloudflare Workers AI
 
 ## 📚 Story Library & Organization
 
@@ -75,10 +78,14 @@ Based on comprehensive codebase analysis, here's a complete list of all end-user
 
 ### Team Coordination
 - **Shared Credit Pools**: Team-wide credit sharing and management
-- **Credit Transfers**: Transfer credits between personal and team accounts
-- **Team Activity Tracking**: Monitor collaborative activities
+- **Automatic Credit Transfer**: All personal credits automatically transfer to team on join
+- **Automatic Story Transfer**: All personal stories become team-owned on invitation acceptance
+- **Story Transfer Audit Trail**: Complete transaction history in `story_transfers` table
+- **One-Team-Per-User Enforcement**: Database-enforced constraint with pre-flight validation
+- **Team Activity Tracking**: Monitor collaborative activities with detailed audit logs
 - **Email Notifications**: Automatic invitation and status updates
 - **Team Story Management**: Shared story creation and editing rights
+- **Subscription Upgrade Transfer**: Automatic transfer when upgrading individual → team/custom plan
 
 ## 💳 Subscription & Payment System
 
@@ -207,4 +214,4 @@ This comprehensive feature set makes iCraftStories a powerful, user-friendly pla
 
 ---
 
-*Generated from comprehensive codebase analysis - Last updated: June 2025*
+*Generated from comprehensive codebase analysis - Last updated: October 2025*

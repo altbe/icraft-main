@@ -1,6 +1,6 @@
 # iCraftStories TODO
 
-**Last Updated:** September 7, 2025  
+**Last Updated:** October 26, 2025
 **Project:** iCraftStories Monorepo (Frontend + Backend)
 
 ## 🚨 Critical - Immediate Actions
@@ -60,6 +60,19 @@
   - Reduce external API dependencies
   - **Effort:** 4-5 hours
 
+## 🎯 Future Enhancements - Backlog
+
+### Legal & Compliance
+- [ ] **Terms of Service System** (`implement-tos-system`)
+  - Database schema: `terms_of_service`, `tos_acceptances`
+  - Bilingual ToS support (EN/ES) with markdown content
+  - User acceptance flow (signup, existing users, team invitations)
+  - Audit trail for legal compliance
+  - Complete implementation plan available
+  - **Effort:** 2-3 weeks
+  - **Priority:** Medium (compliance)
+  - **See:** TOS_IMPLEMENTATION_PLAN.md (comprehensive 787-line plan)
+
 ## 🎯 Image Search Enhancements - IN PROGRESS
 
 ### Completed (September 7, 2025)
@@ -84,6 +97,55 @@
 
 ## ✅ Recently Completed
 
+### October 2025
+
+#### Team Collaboration Features
+- [x] **Story & Credit Transfer Implementation** - October 20-24
+  - Automatic transfer on team invitation acceptance
+  - Database stored procedure `onboard_team_member()` deployed
+  - Story transfer audit table `story_transfers` created
+  - Non-prod migration executed (4 users, 143 stories, 1 subscription)
+  - Information consolidated into `TEAM_MEMBER_REQUIREMENTS.md`
+
+- [x] **One-Team-Per-User Enforcement** - October 23
+  - Database stored procedure `check_user_team_membership_by_email()`
+  - Pre-flight validation before sending invitations
+  - Frontend/backend error handling with team metadata
+  - Zod-based security enhancements (XSS, injection prevention)
+  - Progressive real-time UX with validation feedback
+
+- [x] **Subscription Upgrade Transfer Detection** - October 24
+  - Stripe webhook detects plan upgrades (individual → team/custom)
+  - Automatic `onboard_team_member()` trigger on upgrade
+  - Frontend confirmation dialogs and success notifications
+
+#### Documentation & Code Cleanup
+- [x] **SQL File Archiving** - October 26
+  - Archived 8 obsolete SQL files to `backend/sql/archive/`
+  - Created comprehensive `backend/sql/README.md`
+  - Added deprecation headers to 3 reference files
+  - Documented active vs. reference files (83% obsolete code removed)
+
+- [x] **Documentation Archiving** - October 26
+  - Archived 48 completed documentation files across all repos
+  - Main repo: 39 files (CRISP, team collaboration, subscription, etc.)
+  - Backend: 8 files (migrations, audits, features)
+  - Frontend: 5 files (analyses)
+  - Created quarterly archive structure (2025-Q3, 2025-Q4)
+  - Reduced root directory by 46% (24 → 13 files)
+
+- [x] **MLX Experiments Archiving** - October 26
+  - Archived 8 incomplete MLX files to `backend/mlx-archive/`
+  - Documented supersession by cloud solutions (vLLM, BGE-M3)
+  - Updated CLAUDE.md with accurate implementation status
+  - Main processing script never committed, experiments incomplete
+
+- [x] **Documentation Audits** - October 26
+  - Created `SQL_AUDIT_REPORT.md` (34 functions in files, 83% obsolete)
+  - Created `DOCUMENTATION_AUDIT_2025-10-26.md` (154 files reviewed)
+  - Created `TOP_LEVEL_DOCS_REVIEW.md` (24 files analyzed)
+  - Created `REMAINING_DOCS_ANALYSIS.md` (13 final files reviewed)
+
 ### September 2025
 - [x] Image Search Database Migration - September 7
   - BGE-M3 embeddings for 1,196 images
@@ -107,15 +169,17 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 8  
-**Completed Tasks:** 23  
-**Completion Rate:** 74%
+**Active Tasks:** 9
+**Completed Tasks:** 34
+**Completion Rate:** 79%
 
 ### By Category:
 - **Critical Issues:** 3 pending
 - **Integration:** 4 pending (all Clerk-related)
 - **Deployment:** 1 pending
 - **Infrastructure:** ✅ All complete (Stripe, Teams, Credits)
+- **Team Features:** ✅ All complete (Story/Credit Transfer, One-Team Enforcement)
+- **Documentation:** ✅ Major cleanup complete (64 files archived)
 
 ## 🎯 Sprint Planning Recommendations
 
