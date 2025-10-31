@@ -417,6 +417,251 @@ await supabase.rpc('transfer_all_user_credits_to_team', {
 
 **See:** `backend/CREDIT_SYSTEM_CONSOLIDATED.md` for complete details
 
+## Documentation Scope Alignment Rules
+
+**Principle:** Single Source of Truth (SSOT) - Each piece of information should be documented in exactly ONE authoritative location, with cross-references linking to it.
+
+### Documentation Ownership by Repository
+
+#### Top-Level Repository (`icraft-main/`)
+**Authoritative for:**
+- ✅ **Cross-cutting concerns**: Architecture decisions affecting multiple repositories
+- ✅ **Integration plans**: How frontend, backend, and services work together (Stripe + Supabase + Clerk)
+- ✅ **Master TODO**: High-level tasks, critical bugs, sprint planning, cross-repo initiatives
+- ✅ **Deployment orchestration**: How to deploy the entire system
+- ✅ **Implementation status**: Overall progress summaries (e.g., "Credit system is 50% complete")
+- ✅ **Migration plans**: Database migrations, feature rollouts affecting multiple services
+
+**Examples:**
+- `CREDIT_SYSTEM_CONSOLIDATION_PLAN.md` - Overall status and plan
+- `TODO.md` - Critical cross-repo bugs and high-level tasks
+- `WEBHOOK_MIGRATION_PLAN.md` - Migration strategy and status
+- `DOCUMENTATION_ALIGNMENT_CHECKLIST.md` - Alignment verification
+
+#### Backend Submodule (`backend/`)
+**Authoritative for:**
+- ✅ **Implementation details**: How features actually work in the code
+- ✅ **API contracts**: Endpoint specifications, request/response formats
+- ✅ **Database schema**: Table structures, stored procedures, migrations
+- ✅ **Module guides**: How individual services work internally
+- ✅ **Backend-only TODOs**: Tasks that don't affect frontend or other repos
+- ✅ **Technical architecture**: How backend systems are organized
+
+**Examples:**
+- `backend/CREDIT_SYSTEM_CONSOLIDATED.md` - Complete credit system implementation
+- `backend/docs-internal/api-reference.md` - Endpoint specifications
+- `backend/docs-internal/integrations/` - Integration implementation guides
+- `backend/TODO.md` - Backend-specific technical tasks
+
+#### Frontend Submodule (`frontend/`)
+**Authoritative for:**
+- ✅ **Component architecture**: UI patterns and component library
+- ✅ **State management**: How data flows through the application
+- ✅ **PWA specifics**: Offline support, service workers, IndexedDB
+- ✅ **Frontend-only TODOs**: UI/UX tasks that don't affect backend
+- ✅ **User experience**: Design patterns and accessibility
+
+**Examples:**
+- `frontend/docs/adr/` - Frontend architecture decisions
+- `frontend/CLAUDE.md` - Frontend development patterns
+- `frontend/TODO.md` - Frontend-specific UI/UX tasks
+
+### Cross-Referencing Strategy
+
+**Instead of duplicating content, link to the authoritative source:**
+
+#### Example 1: Credit System Documentation
+
+**Top-Level (`CREDIT_SYSTEM_CONSOLIDATION_PLAN.md`):**
+```markdown
+## Implementation Status
+
+**Overall:** 50% Complete (database done, backend partial, frontend pending)
+
+**Details by Repository:**
+- Database Schema: See `backend/CREDIT_SYSTEM_CONSOLIDATED.md` for complete implementation
+- Backend API: See `backend/docs-internal/api-reference.md#credits`
+- Frontend UI: Not yet implemented
+
+**Critical Issues:**
+- 🔴 2 broken modules in backend (see `backend/CREDIT_SYSTEM_CONSOLIDATED.md` for fix details)
+```
+
+**Backend (`backend/CREDIT_SYSTEM_CONSOLIDATED.md`):**
+```markdown
+## Overview
+
+**Architecture Decision:** See top-level `CREDIT_SYSTEM_CONSOLIDATION_PLAN.md` for overall plan
+
+## Implementation Details
+
+[Complete implementation details - this is the SSOT for "how it works"]
+
+## 🚨 CRITICAL PRODUCTION ISSUE
+
+**2 Backend Modules Using BROKEN Functions:**
+
+1. 🔴 Credit Purchase Handler (`modules/stripe-checkout-completion.ts:162`)
+   - [Detailed technical description and fix steps]
+```
+
+#### Example 2: TODO Organization
+
+**Top-Level `TODO.md`** (Master task list):
+```markdown
+## 🚨 CRITICAL - Cross-Repo Issues
+- [ ] Fix credit purchase handler (Backend) - BLOCKS team member purchases
+
+## 📍 HIGH PRIORITY - Multi-Repo Features
+- [ ] Implement semantic search (Backend + Frontend coordination)
+
+## Backend Tasks
+See `backend/TODO.md` for detailed backend-specific tasks
+
+## Frontend Tasks
+See `frontend/TODO.md` for detailed frontend-specific UI/UX tasks
+```
+
+**Backend `backend/TODO.md`**:
+```markdown
+## Referenced from Top-Level TODO
+
+### 🔴 URGENT: Fix Credit Purchase Handler
+- File: `modules/stripe-checkout-completion.ts:162`
+- Issue: [Detailed technical description]
+- Fix: [Detailed implementation steps]
+- Testing: [Detailed test plan]
+
+## Backend-Only Tasks
+- [ ] Optimize database query performance (no frontend impact)
+- [ ] Add missing test coverage
+```
+
+### Update Workflow
+
+When making changes that affect documentation:
+
+#### 1. Identify Scope
+- Which repositories are affected by this change?
+- Where is the authoritative documentation (SSOT)?
+- What documents reference this information?
+
+#### 2. Update SSOT First
+- Update the authoritative document in the appropriate repository
+- Include validation method (e.g., "Database-validated via Supabase MCP 2025-10-30")
+- Update last modified date
+
+#### 3. Update Cross-References
+- Update documents that reference the SSOT
+- Verify links are still valid
+- Update status summaries in top-level docs
+
+#### 4. Verify Alignment
+- Check `DOCUMENTATION_ALIGNMENT_CHECKLIST.md`
+- Ensure consistent terminology across all docs
+- Verify no contradictory status claims
+
+#### 5. Update TODOs
+- Add/update tasks in appropriate TODO files
+- Use consistent priority markers (🔴 URGENT, 🟡 MEDIUM, 🟢 LOW)
+- Mark completed tasks with dates
+
+#### 6. Commit Atomically
+```bash
+# Example: Fixing credit system
+
+# 1. Update backend implementation (SSOT)
+cd backend
+git checkout -b fix/credit-purchase-handler
+# [Make code changes]
+# Update backend/CREDIT_SYSTEM_CONSOLIDATED.md
+git commit -m "fix: Replace verify_and_allocate_payment with allocate_credits"
+
+# 2. Update top-level status (summary)
+cd ..
+# Update CREDIT_SYSTEM_CONSOLIDATION_PLAN.md
+# Update TODO.md (mark task complete)
+git commit -m "docs: Update credit system status after backend fix"
+
+# 3. Update submodule reference
+git add backend
+git commit -m "chore: Update backend submodule with credit fix"
+```
+
+### Alignment Verification
+
+#### Before Major Updates
+- [ ] Read `DOCUMENTATION_ALIGNMENT_CHECKLIST.md`
+- [ ] Identify all affected documentation files
+- [ ] Validate current state against database/code (use MCP tools when possible)
+
+#### During Updates
+- [ ] Update SSOT document in appropriate repository
+- [ ] Update cross-references in other repositories
+- [ ] Update TODO files at appropriate levels
+- [ ] Check for contradictory claims
+
+#### After Updates
+- [ ] Run alignment verification (compare updated files)
+- [ ] Ensure dates are updated
+- [ ] Verify broken code references match across all docs
+- [ ] Update `DOCUMENTATION_ALIGNMENT_CHECKLIST.md` if needed
+
+### Common Pitfalls to Avoid
+
+❌ **DON'T:**
+- Duplicate implementation details across repositories
+- Claim "Production-Ready" without database/code validation
+- Update only one document when multiple need changes
+- Create new status documents when existing ones exist
+
+✅ **DO:**
+- Link to authoritative source instead of duplicating
+- Validate claims against actual database/code state
+- Use consistent terminology across all documentation
+- Follow the three-level TODO structure (top-level → submodule → inline comments)
+
+### Documentation Templates
+
+Use templates to ensure consistency:
+
+```markdown
+# [Feature Name] Implementation Status
+
+**Last Updated:** YYYY-MM-DD
+**Last Validated:** [Method] (e.g., "Database MCP queries", "Code review")
+**Status:** [Choose one: ✅ Complete | ⚠️ Partial | 🔴 Broken | 📝 Planned]
+
+---
+
+## 🎯 Current Status
+
+**Overall:** [Summary sentence]
+
+**By Component:**
+- Database: [Status] - See [link to SSOT]
+- Backend: [Status] - See [link to SSOT]
+- Frontend: [Status] - See [link to SSOT]
+
+## 🔗 Related Documentation
+
+**This Repository:**
+- [List related docs in same repo]
+
+**Other Repositories:**
+- Top-level: [Links with descriptions]
+- Backend: [Links with descriptions]
+- Frontend: [Links with descriptions]
+
+## 📝 Change Log
+
+| Date | Change | Validated | Files Updated |
+|------|--------|-----------|---------------|
+| YYYY-MM-DD | [Description] | [Method] | [List] |
+```
+
+---
+
 ## Code Style Guidelines
 
 ### Universal Patterns

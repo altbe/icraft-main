@@ -1,7 +1,42 @@
 # iCraftStories TODO
 
-**Last Updated:** October 26, 2025
+**Last Updated:** October 30, 2025
 **Project:** iCraftStories Monorepo (Frontend + Backend)
+
+## ✅ CRITICAL BUGS - FIXED (2025-10-30)
+
+### Backend (`backend/`) - ALL COMPLETE
+
+- [x] **✅ FIXED Credit Purchase Handler** - `modules/stripe-checkout-completion.ts:162`
+  - **Issue**: Used `verify_and_allocate_payment()` which called non-existent `get_team_credit_balance()`
+  - **Impact**: Credit purchases were FAILING for all team members
+  - **Fix Applied**: Replaced with `allocate_credits()` + manual idempotency check
+  - **Status**: ✅ DEPLOYED TO PRODUCTION (2025-10-30)
+  - **Risk**: Team accepted - deployed without testing validation
+
+- [x] **✅ FIXED Webhook Fallback** - `modules/webhook-manager.ts:493`
+  - **Issue**: Used `process_credit_purchase_webhook()` which called broken function
+  - **Impact**: Webhook fallback was FAILING for team members
+  - **Fix Applied**: Replaced with `allocate_credits()` directly
+  - **Status**: ✅ DEPLOYED TO PRODUCTION (2025-10-30)
+
+- [x] **✅ DEPRECATED Legacy Webhook** - `/icraft-stripe-webhook`
+  - **Action**: Endpoint now returns 410 Gone with migration instructions
+  - **Archive**: `backend/legacy-webhooks-archive/` with complete rollback docs
+  - **Status**: ✅ DEPRECATED (2025-10-30)
+  - **Safe to Remove**: 2026-01-28 (90 days)
+
+- [x] **✅ DROPPED Deprecated Functions** - Database cleanup complete
+  - **Action**: Dropped 8 deprecated credit functions from both environments
+  - **Migration**: Applied to non-prod and production (2025-10-30)
+  - **Validation**: All modern functions operational
+  - **Status**: ✅ COMPLETE
+
+**Completion Report**: See `CREDIT_SYSTEM_CLEANUP_COMPLETE.md` for full details
+**Executive Summary**: See `EXECUTIVE_SUMMARY.md` for high-level overview
+**Completed**: 2025-10-30 (~3 hours total)
+
+---
 
 ## 🚨 Critical - Immediate Actions
 
@@ -16,9 +51,9 @@
   - Critical for production confidence
 
 ### Backend (`backend/`)
-- [ ] **Validate Webhook Endpoints** - Test Stripe/Clerk webhooks
-  - Verify event processing
-  - Check error handling and retries
+- [ ] **Validate Webhook Endpoints** - Test Stripe/Clerk webhooks with Edge Functions
+  - Verify Edge Function processes subscription renewals correctly
+  - Test with real Stripe test mode transactions
   - Ensure audit logging works
 
 ## 📍 High Priority - Next Sprint

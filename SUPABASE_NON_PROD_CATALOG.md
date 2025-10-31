@@ -5,6 +5,7 @@
 **Region**: us-east-2
 **Host**: db.jjpbogjufnqzsgiiaqwn.supabase.co
 **Generated**: 2025-10-27
+**Last Updated**: 2025-10-28 (Credit system consolidation completed)
 
 ---
 
@@ -23,8 +24,10 @@ This document catalogs all tables and stored procedures in the iCraftStories non
 ### Key Statistics
 
 - **Total Tables**: 38 (3 tables dropped 2025-10-27)
-- **Total Functions/Procedures**: 167 (2 functions dropped 2025-10-27)
+- **Total Functions/Procedures**: ~152 (17 functions removed during 2025-10-27/28 credit consolidation)
 - **Primary Schema**: public
+
+**Credit System Status**: ✅ Consolidated (17 functions → 8 functions, Pure Ledger Model)
 
 ---
 
@@ -609,65 +612,40 @@ Archived before dropping `team_credit_allocations` table. All allocation data tr
 
 ## Stored Procedures and Functions
 
-### Credit Management (17 functions)
+### Credit Management (8 functions) ✅ Consolidated 2025-10-28
 
-#### Balance Queries
-- **`get_user_credit_balance(p_user_id text)`** → integer
-  Returns credit balance with automatic team detection. If user is team member, returns team shared balance. Otherwise, returns personal balance. **Database-First Team Attribution pattern.** This is the ONLY balance function - legacy alternatives dropped 2025-10-27.
+**Architecture:** Pure Ledger Model with Database-First Team Attribution
 
-#### Credit Usage
-- **`use_credits(p_user_id, p_amount, p_description, p_metadata)`** → jsonb
-  **Consolidated credit usage function** with auto-detect team membership. Replaces both `use_credits()` and `use_team_credits()`. Database-First Team Attribution pattern.
+#### Core Functions (2)
+- **`allocate_credits(p_user_id, p_amount, p_source, p_description, p_metadata)`** → jsonb
+  **Universal credit allocation function.** Replaces all legacy allocation functions (allocate_subscription_credits, allocate_trial_credits, allocate_monthly_credits, add_reward_credits, etc.). Auto-detects team membership and inserts transactions in both credit_transactions and activities tables. Supports sources: 'trial_signup', 'subscription_renewal', 'payment', 'admin_adjustment', 'refund', 'transfer'. Uses translation-friendly descriptions.
 
-- **`use_credits_for_operation(p_user_id, p_operation_type, p_team_id, p_quantity, p_metadata)`** → jsonb
-  Use credits for specific operation types with quantity support.
+- **`use_credits_for_operation(p_user_id, p_operation_type, p_quantity, p_metadata)`** → jsonb
+  **Universal credit usage function.** Auto-detects team membership, calculates cost from operation type and quantity, validates sufficient balance, and creates audit trail in both tables. Supports: 'story_generation', 'image_generation', 'community_copy', 'community_share' (reward). Replaces use_credits() with operation-specific logic.
 
-- **`check_credits_for_operation(p_user_id, p_operation_type, p_quantity)`** → jsonb
-  Check if user has sufficient credits for operation.
+#### Balance Query (1)
+- **`get_user_credit_balance(p_user_id)`** → integer
+  Returns credit balance with automatic team detection. If user is team member, returns team shared balance. Otherwise, returns personal balance. **Database-First Team Attribution pattern.** ONLY balance function - legacy alternatives dropped.
 
-#### Credit Allocation
-- **`allocate_subscription_credits(p_user_id, p_amount, p_description)`** → jsonb
-  Allocate credits from subscription renewal.
+#### Helper Functions (2)
+- **`get_user_team_id(p_user_id)`** → text
+  Database-first team membership lookup. Returns team_id if user is active team member, NULL if individual. Used internally by all credit functions for auto-detection.
 
-- **`allocate_trial_credits(p_user_id, p_amount, p_description)`** → jsonb
-  Allocate trial credits to user.
+- **`calculate_operation_credits(p_operation_type, p_quantity)`** → jsonb
+  Calculate credit cost for operation type and quantity. Centralized pricing logic.
 
-- **`allocate_monthly_credits(p_user_id, p_plan_type, p_subscription_status, p_credits)`** → void
-  Allocate monthly subscription credits (multiple overloads).
-
-- **`add_reward_credits(p_user_id, p_operation_type, p_metadata)`** → jsonb
-  Add reward credits for user actions.
-
-#### Team Credits
-- **`add_team_credits(p_team_id, p_credits_to_add, p_user_id)`** → jsonb
-  Add credits to team pool.
-
-- **`allocate_team_credits(p_team_id, p_amount, p_description, p_user_id)`** → jsonb
-  Allocate credits to team from purchase or allocation.
-
-- **`allocate_team_monthly_credits(p_team_id, p_credits, p_user_id)`** → void
-  Allocate monthly credits to team.
-
-- **`update_team_credit_balance(p_team_id, p_amount_delta, p_transaction_type, p_user_id, p_description, p_metadata)`** → jsonb
-  Update team credit balance with delta.
-
-#### Credit Transfers
+#### Credit Transfer (1)
 - **`transfer_all_user_credits_to_team(p_user_id, p_team_id, p_description)`** → jsonb
-  Transfer ALL user credits to team (used during team onboarding).
+  Transfer ALL user credits to team (used during team onboarding). One-way transfer only - no partial transfers or team→user transfers.
 
-- **`transfer_credits_to_team(p_user_id, p_team_id, p_amount, p_description)`** → jsonb
-  Transfer specific amount of credits to team.
-
-#### Credit History
+#### Credit History (2)
 - **`get_user_credit_history(p_user_id, p_limit, p_offset, p_types)`** → jsonb
-  Get paginated credit transaction history for user.
+  Get paginated credit transaction history for user (includes both personal and team transactions).
 
 - **`get_team_credit_history(p_team_id, p_limit, p_offset, p_types)`** → jsonb
-  Get paginated credit transaction history for team.
+  Get paginated credit transaction history for team (all team transactions).
 
-#### Credit Operations
-- **`calculate_operation_credits(p_operation_type, p_quantity)`** → jsonb
-  Calculate credit cost for operation type.
+**Removed Functions (15):** All deprecated team-specific and legacy allocation functions dropped in consolidation. See migration 20251028000000_cleanup_deprecated_credit_functions.sql for complete list.
 
 ---
 
@@ -1209,25 +1187,44 @@ This provides flexibility for different calling contexts while maintaining API c
 
 ---
 
-## Recent Changes (2025-10-27)
+## Recent Changes
 
-### Credit System Cleanup
-Completed consolidation to Pure Ledger Model by removing legacy/broken implementations:
+### Credit System Consolidation (2025-10-27 to 2025-10-28)
+
+**Phase 1: Schema Cleanup (2025-10-27)**
+Removed legacy tables and broken functions:
 
 **Tables Dropped (3):**
-- `credit_purchases` (0 rows) - Data migrated to `credit_transactions` with `transaction_type='purchase'`
-- `credit_transfers` (0 rows) - Data migrated to `credit_transactions` with `transaction_type='transfer_*'`
-- `team_credit_allocations` (0 rows) - Data tracked in `credit_transactions` ledger
+- `credit_purchases` (0 rows) - Migrated to `credit_transactions` with `transaction_type='purchase'`
+- `credit_transfers` (0 rows) - Migrated to `credit_transactions` with `transaction_type='transfer_*'`
+- `team_credit_allocations` (0 rows) - Tracked in `credit_transactions` ledger
 
 **Functions Dropped (2):**
 - `get_credit_balance(text)` - Called non-existent `get_team_credit_balance()`, broken at runtime
-- `get_team_credits_balance_internal(text)` - Referenced non-existent `teams.credit_balance` column, legacy from pre-consolidation
+- `get_team_credits_balance_internal(text)` - Referenced non-existent `teams.credit_balance` column
 
-**Result:**
-- Single source of truth: `credit_transactions` table (307 rows)
-- Single balance function: `get_user_credit_balance()` with auto-team-detection
-- Simpler schema: 38 tables, 167 functions (was 41 tables, 169 functions)
-- Applied to both non-prod and production environments
+**Phase 2: Function Consolidation (2025-10-28)**
+Created 2 universal functions and removed 15 deprecated functions:
+
+**Functions Created (2):**
+- `allocate_credits()` - Universal allocation (replaces allocate_subscription_credits, allocate_trial_credits, allocate_monthly_credits, add_reward_credits, and all team-specific allocation functions)
+- `use_credits_for_operation()` - Universal usage with activity logging (updated from previous version, removed p_team_id parameter)
+
+**Functions Dropped (15):**
+- `add_team_credits()`, `allocate_monthly_credits_team()`, `allocate_team_credits()`, `allocate_team_monthly_credits()`, `allocate_trial_credits_team()`
+- `can_manage_team_credits()`, `can_use_team_credits()`, `manage_team_credits()`, `transfer_credits_to_team()`, `update_team_credit_balance()`
+- `handle_team_story_credits()` (trigger), `create_team_credits()` (trigger), `allocate_monthly_credits()` (empty overload)
+- `reconcile_credit_balances()`, `validate_credit_balance_consistency()`
+
+**Final Result:**
+- ✅ **17 functions → 8 functions** (56% reduction)
+- ✅ **Pure Ledger Model** - All balances computed from `credit_transactions` table
+- ✅ **Database-First Team Attribution** - `get_user_team_id()` determines team context automatically
+- ✅ **Semantic Operations** - `allocate_credits()` for all allocations, `use_credits_for_operation()` for all usage
+- ✅ **Activity Logging** - Both functions write to `activities` table for audit trail
+- ✅ **Translation-Friendly** - Descriptions use i18n keys (e.g., "operations.story_generation")
+- ✅ Schema: **38 tables, ~152 functions** (was 41 tables, 169 functions)
+- ✅ Applied to both **non-prod** and **production** environments
 
 ---
 

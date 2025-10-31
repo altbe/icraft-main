@@ -74,7 +74,16 @@
       "Bash(for file in FRONTEND_SYNC_MIGRATION_ANALYSIS.md IMAGE_SEARCH_ENHANCEMENTS.md STRIPE_INTEGRATION_V2.md SUBSCRIPTION_PLANS_REFACTORING.md)",
       "Bash(do echo \"=== $file ===\")",
       "Bash(head:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(gh api:*)",
+      "Bash(npm audit:*)",
+      "mcp__supabase__list_edge_functions",
+      "mcp__supabase__deploy_edge_function",
+      "Bash(npx supabase login)",
+      "Bash(stripe trigger:*)",
+      "Bash(npx supabase secrets list:*)",
+      "mcp__clerk__getUserId",
+      "WebFetch(domain:clerk.com)"
     ]
   },
   "enableAllProjectMcpServers": true,

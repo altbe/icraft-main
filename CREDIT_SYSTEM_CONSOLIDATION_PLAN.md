@@ -1,8 +1,139 @@
 # Credit System Consolidation Plan
 
 **Date**: 2025-10-27
-**Status**: Design Complete - Ready for Implementation
+**Last Updated**: 2025-10-30
+**Status**: ⚠️ PARTIALLY IMPLEMENTED (50% Complete)
 **Breaking Changes**: YES - Consolidating 18+ functions into 2 universal functions
+
+---
+
+## 🎯 Current Implementation Status (2025-10-30 - Database Validated)
+
+**Validation Method**: Direct Supabase MCP queries against non-prod database
+**Critical Finding**: 🔴 **3 deprecated functions are BROKEN** - they call non-existent team functions
+
+---
+
+### ✅ Phase 1: Database Layer - COMPLETE
+
+**Modern Functions (Verified Working):**
+- ✅ `allocate_credits()` - Universal allocation, auto-detect team membership
+- ✅ `use_credits_for_operation()` - Universal usage with operation pricing
+- ✅ `get_user_credit_balance()` - Balance query with auto-detect
+- ✅ `calculate_operation_credits()` - Centralized pricing calculator
+- ✅ `transfer_all_user_credits_to_team()` - Credit transfer function
+- ✅ Activity logging, translation keys, JSONB metadata all implemented
+
+**Database Schema:**
+- ✅ `credit_transactions` table with pure ledger model (INSERT-only)
+- ✅ Constraints: user_id NOT NULL, foreign keys enforced
+- ⚠️ NO idempotency constraint on Stripe session IDs (must check manually)
+
+---
+
+### 🔴 Phase 2: Backend Layer - PARTIAL (40% Complete) + BROKEN CODE
+
+**✅ Working Modules (2 of 5):**
+1. ✅ **Stripe Webhook (Edge Function)** - `backend/supabase/functions/stripe-webhook/index.ts:177`
+   - Uses `allocate_credits()` for subscription renewals
+   - Status: ✅ DEPLOYED TO PRODUCTION (Version 2)
+
+2. ✅ **AI Generation** - `backend/modules/icraft-genAi.ts:1781,2550`
+   - Uses `use_credits_for_operation()` for story/image generation
+   - Status: ✅ WORKING
+
+**🔴 BROKEN Modules (2 critical production issues):**
+
+1. 🔴 **Credit Purchase Handler** - `backend/modules/stripe-checkout-completion.ts:162`
+   - Uses `verify_and_allocate_payment()` which calls non-existent `get_team_credit_balance()`
+   - **Impact**: ⚠️ WILL FAIL for team members purchasing credits
+   - **Fix Required**: Replace with `allocate_credits()` + manual idempotency check
+   - **Priority**: 🔴 URGENT - Production credit purchase flow
+
+2. 🔴 **Webhook Fallback Handler** - `backend/modules/webhook-manager.ts:493`
+   - Uses `process_credit_purchase_webhook()` which calls broken `verify_and_allocate_payment()`
+   - **Impact**: ⚠️ WILL FAIL for team members
+   - **Fix Required**: Replace with `allocate_credits()` directly
+   - **Priority**: 🟡 MEDIUM - Fallback only
+
+**❌ Deprecated (Scheduled for Removal):**
+
+3. ❌ **Old Zuplo Webhook** - `backend/modules/webhook-manager.ts:568`
+   - Uses `process_credit_allocation_webhook()` which calls non-existent team functions
+   - **Status**: 🔴 BROKEN for team subscriptions
+   - **Decision**: DO NOT FIX - scheduled for deprecation after Edge Function proves stable (30 days)
+   - **Mitigation**: Edge Function is primary handler
+
+**Deprecated Functions Status (7 functions remaining):**
+- 🔴 BROKEN (4): `process_credit_allocation_webhook`, `verify_and_allocate_payment`, `add_reward_credits`, `use_credits_for_operation` (5-param overload)
+  - These call non-existent functions: `allocate_trial_credits_team`, `allocate_monthly_credits_team`, `use_team_credits`, `get_team_credit_balance`
+- ⚠️ WORKING but deprecated (3): `allocate_monthly_credits` (2 overloads), `process_credit_purchase_webhook`
+
+---
+
+### ❌ Phase 3: Frontend Layer - NOT STARTED
+- ❌ Translation utilities (`creditTranslations.ts`)
+- ❌ Translation files (en/credits.json, es/credits.json)
+- ❌ Component updates for credit history display
+
+---
+
+### ⚠️ Phase 4: Cleanup - PARTIAL (Migration deployed but functions remain)
+
+**Database Cleanup Status:**
+- ✅ Cleanup migration deployed: `20251028132908_cleanup_deprecated_credit_functions_v4`
+- ✅ Team-specific functions dropped: `allocate_trial_credits_team`, `use_team_credits`, etc.
+- ❌ 7 deprecated functions still exist (should be 0)
+- ❌ Need second cleanup pass after fixing broken code
+
+**Remaining Functions to Drop (after code fixes):**
+```sql
+DROP FUNCTION IF EXISTS public.add_reward_credits(text, text, jsonb);
+DROP FUNCTION IF EXISTS public.process_credit_allocation_webhook(jsonb, text, text);
+DROP FUNCTION IF EXISTS public.process_credit_purchase_webhook(jsonb, text, uuid);
+DROP FUNCTION IF EXISTS public.verify_and_allocate_payment(text, text, integer, numeric, text);
+DROP FUNCTION IF EXISTS public.use_credits_for_operation(text, text, text, integer, jsonb); -- 5-param only
+DROP FUNCTION IF EXISTS public.allocate_monthly_credits(text, text, text, integer);
+DROP FUNCTION IF EXISTS public.allocate_monthly_credits(text, text, text);
+DROP FUNCTION IF EXISTS public.use_credits(text, integer, text, jsonb); -- redundant
+```
+
+---
+
+### ❌ Phase 5: Documentation - IN PROGRESS
+- ⚠️ `backend/CREDIT_SYSTEM_CONSOLIDATED.md` - Needs accuracy corrections
+- ⚠️ This document - Being updated with validated findings
+- ❌ `SUPABASE_NON_PROD_CATALOG.md` - Needs function inventory update
+
+---
+
+## 🚨 CRITICAL ACTION REQUIRED
+
+### Priority 1: Fix Broken Production Code (URGENT)
+
+**Issue**: Credit purchase flow will FAIL for any team member
+
+**Files to Fix**:
+1. `backend/modules/stripe-checkout-completion.ts:162` - Replace `verify_and_allocate_payment()` with `allocate_credits()`
+2. `backend/modules/webhook-manager.ts:493` - Replace `process_credit_purchase_webhook()` with `allocate_credits()`
+
+**Timeline**: This week (before team members attempt credit purchases)
+
+**Testing**: Non-prod Stripe test transactions required
+
+---
+
+### Priority 2: Drop Deprecated Functions (After Code Fix)
+
+**Timeline**: After Priority 1 is deployed and tested (1-2 weeks)
+
+---
+
+### Priority 3: Complete Frontend Translation Support
+
+**Timeline**: 2-4 weeks (lower priority, backend works without it)
+
+---
 
 ## Executive Summary
 
