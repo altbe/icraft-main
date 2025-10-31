@@ -389,17 +389,131 @@ $$ LANGUAGE plpgsql;
 
 ### How Decline Works
 
-**Important:** There is **NO custom decline endpoint**. Decline is handled by Clerk.
+**Three Ways to Decline:**
 
-**Two Ways to Decline:**
-
-#### Option 1: Ignore the Email
+#### Option 1: Ignore the Email (Passive Decline)
 - User simply doesn't click the invitation link
 - Invitation remains `pending` in Clerk
 - Invitation expires after Clerk's default timeout (typically 7 days)
-- Team admin can revoke invitation manually
+- No audit trail in our system
 
-#### Option 2: Revoke via Clerk Dashboard (Admin Action)
+#### Option 2: Explicit Decline by Invitee (Active Decline) ⭐ NEW
+- User clicks invitation link and authenticates with Clerk
+- Frontend shows invitation details with "Decline" and "Continue" buttons
+- User clicks "Decline" button
+- Backend logs decline to `activities` table with user_id
+- User redirected to `/library` with toast notification
+- Invitation expires naturally in Clerk (no revocation needed)
+
+**Frontend Handler** (`AcceptTeamInvitationPage.tsx:350-377`):
+```typescript
+const handleDeclineInvitation = async () => {
+  if (!teamId || !userId) {
+    logger.error('Missing teamId or userId for decline');
+    navigate('/library?declined=error', { replace: true });
+    return;
+  }
+
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('Failed to get authentication token');
+    }
+
+    // Call backend to log decline
+    await teamService.declineInvitation(teamId, token);
+
+    // Navigate to library with declined parameter
+    navigate('/library?declined=true', { replace: true });
+  } catch (error) {
+    logger.error('Failed to decline invitation', error);
+    // Still navigate even if logging fails
+    navigate('/library?declined=error', { replace: true });
+  }
+};
+```
+
+**Backend Endpoint** (`clerk-team-invitations.ts:502-581`):
+```typescript
+/**
+ * Decline team invitation (authenticated user)
+ * POST /teams/onboarding/decline
+ */
+export async function declineTeamInvitation(request: ZuploRequest, context: ZuploContext) {
+  // Get authenticated user from Clerk JWT
+  const { requireUserId } = await import('./auth-utils');
+  const userId = requireUserId(request, context);
+
+  // Get teamId from request body
+  const { teamId } = await request.json();
+
+  // Get team name for activity log
+  const { data: team } = await supabase
+    .from('teams')
+    .select('name')
+    .eq('id', teamId)
+    .single();
+
+  // Log decline to activities (best effort - don't fail if this fails)
+  await supabase.from('activities').insert({
+    user_id: userId,
+    team_id: teamId,
+    action_type: 'invitation_declined',
+    entity_type: 'team_invitation',
+    entity_id: teamId,
+    metadata: {
+      team_name: team?.name || 'Unknown',
+      declined_at: new Date().toISOString(),
+      source: 'accept_invitation_page',
+      user_agent: request.headers.get('user-agent') || 'unknown'
+    }
+  });
+
+  return new Response(JSON.stringify({ success: true }), {
+    status: HttpStatusCode.OK,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+```
+
+**Frontend Toast** (`StoryLibrary.tsx:93-120`):
+```typescript
+// Handle invitation decline notification
+useSafeEffect(() => {
+  const declined = searchParams.get('declined');
+
+  if (declined) {
+    if (declined === 'true') {
+      toast({
+        title: t('teams:invitationDeclined', 'Invitation Declined'),
+        description: t('teams:invitationDeclinedMessage', 'You have declined the team invitation.'),
+        variant: 'default',
+      });
+    } else if (declined === 'error') {
+      toast({
+        title: t('teams:invitationDeclineError', 'Decline Error'),
+        description: t('teams:invitationDeclineErrorMessage', 'There was an error declining the invitation, but you can continue using the app.'),
+        variant: 'default',
+      });
+    }
+
+    // Remove declined parameter from URL
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.delete('declined');
+      return newParams;
+    }, { replace: true });
+  }
+}, [searchParams, t, toast, setSearchParams], 'StoryLibrary-DeclineNotification');
+```
+
+**Result:**
+- ✅ User's decline action logged with user_id and team_id
+- ✅ Toast notification shown in Library
+- ✅ Invitation expires naturally in Clerk (no manual revocation)
+- ✅ Audit trail for reporting and analytics
+
+#### Option 3: Revoke via Admin (Admin Action)
 - Team admin goes to TeamManagementPage
 - Clicks "Cancel Invitation" button
 - Frontend calls: `DELETE /teams/{teamId}/invitations/{invitationId}`
@@ -407,7 +521,7 @@ $$ LANGUAGE plpgsql;
 - Clerk updates invitation status to `revoked`
 - Clerk triggers webhook: `organizationInvitation.revoked`
 
-**Backend Handler** (`clerk-team-invitations.ts:cancelClerkTeamInvitation`):
+**Backend Handler** (`clerk-team-invitations.ts:407-490`):
 ```typescript
 export async function cancelClerkTeamInvitation(request: ZuploRequest, context: ZuploContext) {
   const { teamId, invitationId } = request.params;
