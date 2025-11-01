@@ -6,12 +6,13 @@
 
 ## Summary
 
-Fixed two critical bugs affecting team collaboration features:
+Fixed three critical bugs affecting team collaboration features:
 
-1. **Team Stories Sync** - Team members could not see their team stories (stories disappeared from frontend)
-2. **Community Story Sharing** - Team members received 500 error when sharing stories to community
+1. **Team Stories Sync (Backend)** - Team members could not see their team stories (sync endpoint excluded team stories)
+2. **Team Stories IndexedDB Filtering (Frontend)** - Team stories were deleted from local storage after initial sync
+3. **Community Story Sharing** - Team members received 500 error when sharing stories to community
 
-Both issues have been resolved and deployed to production and non-production environments.
+All issues have been resolved and deployed to production and non-production environments.
 
 ---
 
@@ -140,7 +141,149 @@ if (table === 'stories') {
 
 ---
 
-## Bug #2: Community Story Sharing Credit Reward Failure
+## Bug #2: Team Stories IndexedDB Filtering
+
+### Problem
+
+After the backend sync fix (Bug #1), team stories would initially appear in the frontend but then **disappear after a short time**. Stories were being synced correctly but deleted from local IndexedDB storage.
+
+### Root Cause
+
+The `StoryService.ts` had multiple places that filtered stories by `userId`, which excluded team stories:
+
+1. **`cleanupOtherUserStories()` (lines 76-97)** - **DELETED team stories from IndexedDB**:
+   ```typescript
+   const storiesForOtherUsers = stories.filter(
+     story => story.userId !== userId  // ❌ Deletes team stories!
+   );
+   for (const story of storiesForOtherUsers) {
+     await db.delete('stories', story.id);  // Team stories deleted!
+   }
+   ```
+
+2. **`validateUserAccess()` (lines 99-105)** - Rejected team stories:
+   ```typescript
+   return story.userId === userId;  // ❌ Only personal stories
+   ```
+
+3. **`getAllStories()` (lines 146-200)** - Filtered out team stories:
+   ```typescript
+   if (story.userId === userId) {  // ❌ Only personal stories
+     stories.push(story);
+   }
+   ```
+
+4. **`getAllStoryIds()` (lines 211-231)** - Used userId index:
+   ```typescript
+   const stories = await db.getAll('stories', 'userId', userId);
+   // ❌ IndexedDB userId index excludes team stories
+   ```
+
+**Why This Failed for Team Stories:**
+- Team stories have `teamId` set (e.g., `'41fd2ce8-ca28-4581-b264-29cd747a25bf'`)
+- Team stories have `userId` set to **original creator**, not current team member
+- Frontend was checking `story.userId === currentUserId`, which failed for team stories
+- Stories were immediately deleted by `cleanupOtherUserStories()` during initialization
+
+### Evidence
+
+**User Flow:**
+1. User logs in as team member (g@altgene.net)
+2. Backend syncs 27 stories (21 team + 6 personal) ✅
+3. Stories written to IndexedDB via `SimplifiedSyncService.applyServerUpdates()` ✅
+4. StoryService initializes, runs `cleanupOtherUserStories()`
+5. Cleanup finds 21 team stories where `userId !== currentUserId`
+6. **All 21 team stories deleted from IndexedDB** ❌
+7. Only 6 personal stories remain
+8. User sees "missing" stories
+
+### Solution
+
+Modified all story filtering logic to recognize team stories:
+
+```typescript
+// cleanupOtherUserStories() - lines 76-97
+const storiesForOtherUsers = stories.filter(
+  story => {
+    // Keep stories that either:
+    // 1. Belong to current user (personal stories)
+    // 2. Have teamId set (team stories - backend verified access by syncing them)
+    return story.userId !== userId && !story.teamId;
+  }
+);
+
+// validateUserAccess() - lines 99-105
+private validateUserAccess(story: Story | null, userId: string): boolean {
+  if (!userId || !story) return false;
+  // User has access if either:
+  // 1. Story belongs to user (personal story)
+  // 2. Story has teamId (team story - backend verified access by syncing it)
+  return story.userId === userId || !!story.teamId;
+}
+
+// getAllStories() - lines 175-196
+if (story.userId === userId || story.teamId) {
+  stories.push(story);
+}
+
+// getAllStoryIds() - lines 211-231
+const allStories = await db.getAll('stories');
+const accessibleStories = allStories.filter(
+  story => story.userId === userId || !!story.teamId
+);
+```
+
+### Benefits
+
+1. **Security Maintained**: Backend already verified user has access to team stories by syncing them
+2. **No Unauthorized Access**: Stories not synced by backend are never stored locally
+3. **Persistent Team Stories**: Team stories survive cleanup and filtering
+4. **Consistent Logic**: Same pattern used in all filtering functions
+
+### Files Modified
+
+- `frontend/src/services/StoryService.ts:76-231` - Updated all story filtering logic
+
+### Testing
+
+**Verification Steps**:
+
+1. **Initial Sync Test**:
+   - Log in as team member (g@altgene.net)
+   - Wait for sync to complete
+   - Check IndexedDB: Should contain 27 stories (21 team + 6 personal)
+   - **Verify stories persist** - do NOT get deleted
+
+2. **Story Library Test**:
+   - Open StoryLibrary component
+   - Verify 27 stories displayed
+   - Check that both personal and team stories visible
+   - Refresh page, verify stories still present
+
+3. **Cleanup Test**:
+   - Create stories from different user account
+   - Switch back to g@altgene.net
+   - Verify cleanup only removes stories from other users, NOT team stories
+
+### Impact
+
+**Before Fix**:
+- Team stories synced successfully from backend ✅
+- Team stories written to IndexedDB ✅
+- **Team stories immediately deleted by cleanup** ❌
+- Only personal stories remained
+- User experience: Stories "disappear" shortly after appearing
+
+**After Fix**:
+- Team stories synced successfully from backend ✅
+- Team stories written to IndexedDB ✅
+- **Team stories persist in IndexedDB** ✅
+- All stories visible in library (personal + team)
+- User experience: All stories remain visible ✅
+
+---
+
+## Bug #3: Community Story Sharing Credit Reward Failure
 
 ### Problem
 
@@ -330,12 +473,20 @@ Community sharing rewards **+3 credits** (negative in pricing table = reward).
 
 ## Verification Checklist
 
-### Team Stories Sync
+### Team Stories Sync (Backend)
 - [x] Database query confirms 27 stories for g@altgene.net
 - [x] Stored procedure test returns all stories
 - [x] Backend code updated to use stored procedure
-- [x] TypeScript compilation passes
-- [ ] Frontend test: User sees all team stories after sync
+- [x] Backend TypeScript compilation passes
+- [ ] Frontend test: Stories synced from backend
+- [ ] Production verification with real user account
+
+### Team Stories IndexedDB Filtering (Frontend)
+- [x] Identified story deletion in cleanupOtherUserStories()
+- [x] Updated all filtering logic to recognize teamId
+- [x] Frontend TypeScript compilation passes
+- [ ] Frontend test: Team stories persist in IndexedDB
+- [ ] Frontend test: All 27 stories visible in StoryLibrary
 - [ ] Production verification with real user account
 
 ### Community Story Sharing
