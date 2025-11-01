@@ -634,7 +634,7 @@ export async function createCheckoutSession(
         clerk_user_id: userId
       }
     },
-    success_url: `${process.env.APP_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.APP_URL}/library?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.APP_URL}/pricing`
   });
   
@@ -669,7 +669,7 @@ export async function createPortalSession(
   // Create portal session
   const session = await stripe.billingPortal.sessions.create({
     customer: user.stripe_customer_id,
-    return_url: `${process.env.APP_URL}/dashboard`
+    return_url: `${process.env.APP_URL}/library`
   });
   
   return new Response(JSON.stringify({ 

@@ -345,7 +345,7 @@ Modal dialog for displaying and accepting ToS.
 #### **TosAcceptPage.tsx**
 Standalone page for ToS acceptance after sign-up.
 
-**Route**: `/tos/accept?redirect=/dashboard`
+**Route**: `/tos/accept?redirect=/library`
 
 **Flow**:
 1. Load current ToS
@@ -473,11 +473,11 @@ export function App() {
 ```
 1. User clicks "Sign Up" → Clerk SignUp component
 2. User completes form → Clerk creates account
-3. Clerk redirects to /tos/accept?redirect=/dashboard
+3. Clerk redirects to /tos/accept?redirect=/library
 4. Frontend shows TosAcceptanceDialog (blocking)
 5. User reads, checks "I agree", clicks "Accept"
 6. POST /users/tos/accept with method='signup'
-7. Redirect to /dashboard
+7. Redirect to /library
 8. User can now use platform
 ```
 

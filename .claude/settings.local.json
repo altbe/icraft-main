@@ -83,7 +83,15 @@
       "Bash(stripe trigger:*)",
       "Bash(npx supabase secrets list:*)",
       "mcp__clerk__getUserId",
-      "WebFetch(domain:clerk.com)"
+      "WebFetch(domain:clerk.com)",
+      "mcp__clerk__getOrganization",
+      "mcp__sentry-mcp__find_projects",
+      "WebFetch(domain:docs.sentry.io)",
+      "Bash(claude doctor:*)",
+      "Bash(for:*)",
+      "Bash(do)",
+      "Bash(/tmp/add_logger_import.sh \"$file\")",
+      "WebFetch(domain:crisp.chat)"
     ]
   },
   "enableAllProjectMcpServers": true,
