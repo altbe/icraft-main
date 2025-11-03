@@ -54,3 +54,6 @@ scripts/.env
 # Story processing temporary directories
 stories-tmp/
 story-tmp/
+
+# Claude settings
+.claude/settings.local.json
