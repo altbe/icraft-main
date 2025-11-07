@@ -2,9 +2,56 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Current Work Session (2025-10-23)
+## Current Work Session (2025-11-07)
 
-### ✅ Just Completed (2025-10-23)
+### ✅ Just Completed (2025-11-07)
+
+#### Clerk Webhook Decommission ✅ COMPLETE
+- **Problem**: Duplicate webhook handlers (Zuplo + Supabase Edge Function) after incomplete migration
+- **Discovery**: Migration completed 2025-11-03 but cleanup step never finished
+- **Solution Completed**:
+  - **Removed Zuplo Handler**: Deleted `/icraft-clerk-webhook` route from `routes.oas.json`
+  - **Replaced Module**: `modules/icraft-clerk.ts` replaced with HTTP 410 deprecation stub
+  - **Archived Code**: Original handler saved to `archive/deprecated-clerk-webhook/`
+  - **Preserved Auth**: Kept essential Clerk modules (`clerk-api-client.ts`, `clerk-team-invitations.ts`)
+  - **Updated Docs**: CLAUDE.md and created `CLERK_WEBHOOK_DECOMMISSION.md`
+  - **Clerk Dashboard**: Old Zuplo endpoint removed (2025-11-07)
+- **Current Architecture**:
+  - Single webhook endpoint: Supabase Edge Function only
+  - URL: `https://lgkjfymwvhcjvfkuidis.supabase.co/functions/v1/clerk-webhook`
+  - Performance: ~250ms latency, 100% success rate
+  - Active since: 2025-11-03 (stable for 4+ days)
+- **Documentation**: `backend/CLERK_WEBHOOK_DECOMMISSION.md`
+- **Verification**: No code references to Zuplo handler remain
+
+#### Trial-to-Active Credit Allocation Fix ✅ COMPLETE
+- **Problem**: Users transitioning from trial to paid subscriptions weren't receiving monthly credits
+- **Root Cause**: Edge Function only updated cache, didn't allocate credits for status transitions
+- **Solution Deployed**:
+  - **Migration 020**: Created `process_subscription_webhook_update()` database function
+  - **Edge Function Update**: `stripe-webhook` v10 with status transition detection
+  - **Migration 021**: Removed legacy `verify_and_create_subscription()` overload
+  - **User Remediation**: Allocated 30 credits to affected production user
+- **Architecture**:
+  - Webhook layer translates external IDs (Stripe/Clerk) to internal UUIDs
+  - Calls existing `process_subscription_state_change()` state machine
+  - Automated credit lookup from `subscription_plans` table (not hardcoded)
+  - ACID transactions with full rollback capability
+- **Results**:
+  - ✅ Zero stuck trials in production
+  - ✅ Automated credit allocation working
+  - ✅ Full audit trail in `credit_transactions`
+  - ✅ Zero overloaded functions (clean codebase)
+- **Documentation**: `TRIAL_TO_ACTIVE_CREDIT_FIX_IMPLEMENTATION_COMPLETE.md`
+- **Deployment**: Both production and non-production (2025-11-07)
+
+---
+
+## Previous Work Sessions
+
+### Work Session (2025-10-23)
+
+### ✅ Completed (2025-10-23)
 
 #### Team Member Requirements Documentation
 - Created comprehensive `TEAM_MEMBER_REQUIREMENTS.md` with all team collaboration requirements
