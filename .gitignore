@@ -36,6 +36,9 @@ test-*.png
 # Documentation drafts
 IMAGE_*.md
 AI_IMAGE_*.md
+CUSTOM_30_*.md
+DOUBLE_SUBMIT_*.md
+LOCAL_VLLM_*.md
 
 # Python
 venv/
