@@ -38,11 +38,13 @@ This is a **monorepo with Git submodules**:
 - **Framework**: React 18.3.1 + TypeScript + Vite 6.1.0
 - **Deployment**: Cloudflare Workers with static assets
 - **PWA**: VitePWA with service workers, offline-first IndexedDB storage
-- **UI**: Tailwind CSS + shadcn/ui components
+- **UI**: Tailwind CSS + shadcn/ui components (ADHD/dyslexia-friendly design)
 - **Canvas**: Konva.js for interactive story editing
 - **Auth**: Clerk React for user management
 - **i18n**: i18next with English/Spanish support
 - **Payments**: Stripe for subscriptions and credit purchases
+- **SEO**: JSON-LD structured data, dynamic sitemaps, analytics tracking
+- **Accessibility**: WCAG 2.1 AA compliant, dyslexia-friendly fonts (Lexend, Atkinson Hyperlegible)
 
 ### Backend Stack
 - **Gateway**: Zuplo API Gateway (Backend-for-Frontend architecture)
@@ -101,6 +103,16 @@ This is a **monorepo with Git submodules**:
 See [`docs-archive/work-sessions/README.md`](./docs-archive/work-sessions/README.md) for completed work history.
 
 ### Key Recent Changes (2025-11)
+
+#### Frontend (November 15, 2025)
+- ✅ **SEO & Growth**: Comprehensive JSON-LD, dynamic language detection, enhanced sitemaps, analytics
+- ✅ **Security**: OWASP Top 10 review complete, sensitive data removed from logs
+- ✅ **Accessibility**: WCAG 2.1 AA compliance, ADHD/dyslexia-friendly design
+- ✅ **Fonts**: Custom PDF export fonts (Atkinson Hyperlegible, Lexend, Poppins)
+- ✅ **PWA**: iOS installation fixes, PageSpeed mobile optimization, offline improvements
+- ✅ **Service Worker**: WWW subdomain bypass for Cloudflare redirects
+
+#### Backend (November 2025)
 - ✅ UUID/TEXT type mismatch fixed in PostgreSQL functions
 - ✅ Clerk webhook migrated to Supabase Edge Function
 - ✅ Trial-to-active credit allocation automated
