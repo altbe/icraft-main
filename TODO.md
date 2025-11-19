@@ -41,6 +41,13 @@
 ## 🚨 Critical - Immediate Actions
 
 ### Frontend (`frontend/`)
+- [ ] **Crisp Chat Resilience** - Add retry logic and reduce log severity
+  - Reduce Crisp chat error logs from error to warn/debug level
+  - Add retry logic for Crisp SDK load failures
+  - Handle "Invalid data" errors gracefully with session recovery
+  - **Sentry Issues**: ICRAFT-FRONT-7A/7B/7C (153 events in 24h)
+  - **Effort**: 1-2 hours
+
 - [x] **Fix Lint Errors** - ✅ COMPLETED (November 16, 2025)
   - Reduced from 596 errors to 0 errors, 254 warnings
   - Enabled ESLint caching (`--cache` flag) for faster linting
