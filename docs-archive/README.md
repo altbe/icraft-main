@@ -14,7 +14,62 @@
 
 ## Archive Structure
 
-### 2025-Q4-story-credit-transfer/ (8 files) **NEW**
+### 2025-Q4-credit-system-cleanup/ (8 files) **NEW**
+**Status**: ✅ Complete - Production deployed 2025-10-30
+**Period**: October 2025
+**Archive Date**: 2025-11-19
+**Summary**: Credit system cleanup including bug fixes, legacy deprecation, and database cleanup
+
+#### Files:
+- `CREDIT_ENDPOINTS_FULLY_CONSOLIDATED.md` - Endpoint consolidation report
+- `CREDIT_HISTORY_CONSOLIDATION.md` - History consolidation details
+- `CREDIT_SYSTEM_CLEANUP_COMPLETE.md` - Final completion report
+- `CREDIT_SYSTEM_CLEANUP_PLAN.md` - Original cleanup plan
+- `CREDIT_SYSTEM_CLEANUP_PROGRESS.md` - Progress tracking
+- `CREDIT_SYSTEM_CLEANUP_SESSION_SUMMARY.md` - Session summary
+- `CREDIT_SYSTEM_CONSOLIDATION_PLAN.md` - Consolidation strategy
+- `EXECUTIVE_SUMMARY.md` - High-level summary for stakeholders
+
+---
+
+### 2025-Q4-stripe-automation/ (10 files) **UPDATED**
+**Status**: ✅ Complete - Phases 1-3 deployed November 2025
+**Period**: November 2025
+**Archive Date**: 2025-11-19
+**Summary**: Stripe webhook automation, dispute handling, Custom 30 plan, and architecture proposals
+
+#### Files:
+- `STRIPE_EVENT_AUTOMATION_COMPREHENSIVE_PLAN.md` - Full automation plan
+- `STRIPE_EVENT_AUTOMATION_IMPLEMENTATION_COMPLETE.md` - Implementation report
+- `STRIPE_INTEGRATION_DEPLOYMENT.md` - Deployment procedures
+- `STRIPE_INTEGRATION_IMPLEMENTATION_SUMMARY.md` - Implementation summary
+- `STRIPE_DISPUTE_CHARGEBACK_ANALYSIS.md` - Dispute analysis
+- `STRIPE_DISPUTE_IMPLEMENTATION_COMPLETE.md` - Dispute handling
+- `CUSTOM_30_CONFIGURATION_SUMMARY.md` - Custom 30 configuration
+- `CUSTOM_30_MCP_EXECUTION_PLAN.md` - MCP execution plan
+- `CUSTOM_30_PLAN_IMPLEMENTATION.md` - Implementation details
+- `STRIPE_INTEGRATION_V2.md` - Clean-slate architecture proposal (NOT implemented - valuable enhancements moved to STRATEGIC_ENHANCEMENTS.md)
+
+---
+
+### 2025-Q4-completed-implementations/ (23 files) **UPDATED**
+**Status**: ✅ Complete - Various Q4 2025 implementations
+**Period**: October-November 2025
+**Archive Date**: 2025-11-19
+**Summary**: Bug fixes, feature implementations, migration plans, and system reviews
+
+#### Files:
+- Trial/Subscription: `TRIAL_TO_ACTIVE_CREDIT_FIX_*.md`, `SUBSCRIPTION_REDESIGN_PROPOSAL.md`
+- Audits: `AUDIT_TRAIL_IMPLEMENTATION_COMPLETE.md`, `ROUTES_AUDIT_FINDINGS.md`, `WEBHOOK_VALIDATION_REPORT.md`
+- Bug Fixes: `FRONTEND_*.md`, `OFFLINE_STATUS_FIX.md`, `TEAM_*.md`
+- Implementations: `CLERK_TICKET_STRATEGY_IMPLEMENTATION.md`, `PHASE_*.md`
+- Reference: `LOCAL_VLLM_SETUP_SUMMARY.md`, `COMMUNITY_STORIES_*.md`
+- `SUPABASE_STRIPE_INTEGRATION_REVIEW.md` - Point-in-time database review (October 2025)
+- `TOS_IMPLEMENTATION_PLAN.md` - Terms of Service system (✅ FULLY IMPLEMENTED - v2.0 deployed October 2025)
+
+---
+
+### 2025-Q4-story-credit-transfer/ (8 files)
 **Status**: ✅ Complete - Story and credit transfer fully implemented
 **Period**: October 2025
 **Archive Date**: 2025-10-26
@@ -57,17 +112,28 @@
 
 ---
 
-### 2025-Q3-search-features/ (5 files) **UPDATED**
+### 2025-Q3-search-features/ (6 files) **UPDATED**
 **Status**: ✅ Complete - AI-powered search deployed
 **Period**: July-September 2025
+**Archive Date**: 2025-11-19
 **Summary**: Semantic image search with BGE-M3 embeddings
 
 #### Files:
+- `IMAGE_SEARCH_ENHANCEMENTS.md` - Complete implementation plan (1,700 lines) **ADDED 2025-11-19**
 - `AI_IMAGE_HISTORY_MVP_DESIGN.md` - AI image history MVP design
 - `AI_SEARCH_MIGRATION_SUMMARY.md` - Search migration summary
 - `CATEGORY_CONSOLIDATION_PLAN.md` - Image category consolidation
 - `IMPLEMENTATION_SUMMARY.md` - Search implementation summary
-- `VECTOR_SEARCH_TEST_PLAN.md` - Vector search test plan (151 lines) **ADDED 2025-10-26**
+- `VECTOR_SEARCH_TEST_PLAN.md` - Vector search test plan (151 lines)
+
+**Key Achievements**:
+- BGE-M3 embeddings for 1,196 custom images (1024 dimensions)
+- Real-time query embedding via Cloudflare Workers AI
+- pgvector similarity search with IVFFlat indexes
+- Multilingual support (100+ languages)
+- Frontend caching (IndexedDB + localStorage)
+- CDN delivery via img.icraftstories.com
+- Phase 6 (CDN image transformation) documented in `STRATEGIC_ENHANCEMENTS.md`
 
 ---
 
@@ -176,31 +242,47 @@
 
 ## Archive Statistics
 
-**Total Archive Directories**: 9
-**Total Archived Files**: 60 files
-**Archive Period**: July 2025 - October 2025
-**Latest Archive Date**: 2025-10-26
+**Total Archive Directories**: 12
+**Total Archived Files**: 102 files
+**Archive Period**: July 2025 - November 2025
+**Latest Archive Date**: 2025-11-19
 
 ### Files by Category
 
 | Category | Files | Status |
 |----------|-------|--------|
+| Credit System Cleanup | 8 | ✅ Complete |
+| Stripe Automation | 10 | ✅ Complete |
+| Completed Implementations | 23 | ✅ Complete |
 | Story/Credit Transfer | 8 | ✅ Complete |
 | Subscription Refactoring | 3 | ⚠️ Superseded |
-| Search Features | 5 | ✅ Complete |
+| Search Features | 6 | ✅ Complete |
 | CRISP Integration | 10 | ✅ Complete |
 | Team Collaboration | 11 | ✅ Complete |
+| Team Invitations | 4 | ✅ Complete |
 | Subscription Migration | 5 | ✅ Complete |
 | Custom Images | 4 | ✅ Complete |
 | Misc Completed | 5 | ✅ Complete |
 | Completed Audits | 4 | ✅ Complete |
-| **TOTAL** | **60** | |
+| **TOTAL** | **102** | |
 
 ---
 
-## Recent Archiving Activity (2025-10-26)
+## Recent Archiving Activity
 
-### Fourth Archiving Pass - Final Cleanup
+### November 2025 Consolidation (2025-11-19)
+- **Added**: 2025-Q4-credit-system-cleanup/ (8 files)
+- **Added**: 2025-Q4-stripe-automation/ (9 files)
+- **Added**: 2025-Q4-completed-implementations/ (21 files)
+- **Files Archived**: 38 total
+- **Impact**: Reduced root directory from 47 to 9 markdown files (81% reduction)
+- **Result**: Clean root directory with only active documentation
+
+---
+
+### October 2025 Archiving (2025-10-26)
+
+#### Fourth Archiving Pass - Final Cleanup
 - **Added**: 2 analysis documents to completed-audits/ (SQL_AUDIT_REPORT.md, REMAINING_DOCS_ANALYSIS.md)
 - **Files**: Repository meta-analysis documents (~1,200 lines)
 - **Impact**: Reduced root directory from 12 to 10 markdown files (58% total reduction)
@@ -283,21 +365,13 @@ After archiving, these files remain in the root directory:
 - `FEATURES.md` - Feature catalog
 - `TODO.md` - Task tracking
 
-### Architecture & Integration (3)
-- `SUPABASE_STRIPE_INTEGRATION_REVIEW.md` - Database/Stripe integration reference
-- `STRIPE_INTEGRATION_V2.md` - Clean-slate Stripe architecture
-- `TEAM_MEMBER_REQUIREMENTS.md` - Team collaboration requirements
-
-### Recent Audits (2)
-- `SQL_AUDIT_REPORT.md` - SQL function audit (2025-10-26)
-- `DOCUMENTATION_AUDIT_2025-10-26.md` - Documentation audit (2025-10-26)
-
-### Active Planning (2)
-- `TOS_IMPLEMENTATION_PLAN.md` - Terms of Service implementation (in progress)
-- `IMAGE_SEARCH_ENHANCEMENTS.md` - Image search monitoring (ongoing)
+### Strategic Planning (1)
+- `STRATEGIC_ENHANCEMENTS.md` - Future performance optimizations and feature enhancements
 
 ### Setup Guides (1)
 - `PLAYWRIGHT_SETUP.md` - Playwright testing setup
+
+**Total Active Files**: 6
 
 ---
 
@@ -311,6 +385,6 @@ After archiving, these files remain in the root directory:
 ---
 
 **Archive Created**: 2025-10-26
-**Last Updated**: 2025-10-26
+**Last Updated**: 2025-11-19
 **Maintainer**: Development team
 **Review Schedule**: Quarterly or after major feature releases

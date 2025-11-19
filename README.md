@@ -1,102 +1,107 @@
-# iCraftStories - Monorepo
+# iCraftStories
 
-Full-stack AI-powered illustrated story creation platform with team collaboration, offline-first PWA architecture, and multi-language support.
+AI-powered illustrated story creation platform for educators, therapists, and parents. Create personalized social skills stories with team collaboration, offline-first PWA architecture, and multi-language support.
+
+## What is iCraftStories?
+
+iCraftStories helps users create personalized illustrated stories for children, focusing on:
+- **Social Skills Training** - Stories that teach sharing, emotions, transitions
+- **Therapeutic Storytelling** - Custom narratives for specific situations
+- **Educational Content** - Engaging visual stories for learning
+
+### Key Capabilities
+
+- **AI Story Generation** - GPT-4o-mini text with consistent character design
+- **AI Illustrations** - Stability AI SD3.5-large-turbo with feedback-based regeneration
+- **Semantic Image Search** - BGE-M3 embeddings for 100+ language search (pgvector)
+- **Team Collaboration** - Shared credit pools, automatic story/credit transfer
+- **Offline-First PWA** - Full editing without internet (92% PWA feature complete)
+- **Multi-Language** - English and Spanish interface and content
 
 ## Architecture
 
-This repository uses Git submodules to manage two separate applications:
+Monorepo with Git submodules:
 
-- **Frontend**: `frontend/` - React PWA with TypeScript, Konva canvas, IndexedDB sync
-- **Backend**: `backend/` - Zuplo API Gateway (BFF architecture) with Supabase + Stripe integration
+| Component | Technology | Deployment |
+|-----------|------------|------------|
+| **Frontend** | React 18, TypeScript, Vite, Konva.js | Cloudflare Workers |
+| **Backend** | Zuplo API Gateway, Supabase, Stripe | Zuplo GitOps |
+| **Database** | PostgreSQL (Supabase) with pgvector | Supabase Cloud |
+| **Storage** | Cloudflare R2 + CDN | img.icraftstories.com |
 
 ## Quick Start
 
 ```bash
-# Clone with submodules (using gh CLI)
-npm run clone:fresh
-# OR traditional git
+# Clone with submodules
 git clone --recursive https://github.com/altbe/icraft-main.git
 cd icraft-main
 
-# Setup and development
+# Setup and run
 npm run setup    # Initialize submodules and install dependencies
-npm run dev      # Start both frontend and backend
+npm run dev      # Start both frontend (port 3000) and backend
 ```
 
-## Available Commands
+## Development Commands
 
-### Development
 ```bash
+# Daily development
 npm run dev              # Start both services
-npm run dev:frontend     # Frontend only (port 3000)
+npm run dev:frontend     # Frontend only
 npm run dev:backend      # Backend only
+
+# Build & test
+npm run build            # Build both projects
+npm run test             # Run all tests
+npm run lint             # Lint both projects
+
+# Submodule management
+npm run setup            # Initialize submodules
+npm run update           # Update submodules to latest
+npm run repo:status      # View repo and submodule status
 ```
-
-### Building & Testing
-```bash
-npm run build           # Build both projects
-npm run test            # Run all tests
-npm run lint            # Lint both projects
-npm run clean           # Clean build artifacts
-
-# Browser Testing with Playwright
-node test-browsers.js   # Test Chromium and Firefox browsers
-npm run playwright:install # Install/update Playwright browsers
-```
-
-### Repository Management
-```bash
-npm run setup           # Initialize submodules and dependencies
-npm run update          # Update submodules to latest
-npm run repo:status     # View repo info and submodule status
-npm run repo:issues     # List recent issues
-npm run repo:prs        # List recent pull requests
-```
-
-### Pull Requests
-```bash
-npm run pr:create       # Create PR in web interface
-npm run pr:view         # View current PR in web interface
-```
-
-### Deployment
-```bash
-npm run deploy:dev      # Deploy to development
-npm run deploy:qa       # Deploy to QA
-npm run deploy:prod     # Deploy to production
-```
-
-## Submodule Management
-
-```bash
-# Update submodules to latest
-git submodule update --remote
-
-# Pull latest changes for all submodules
-git submodule foreach git pull origin main
-
-# Update to specific commit
-cd frontend
-git checkout <commit-hash>
-cd ..
-git add frontend
-git commit -m "Update frontend to v1.2.3"
-```
-
-## Development Workflow
-
-1. Work on features in individual repositories (`frontend/`, `backend/`)
-2. Test integration points between services
-3. Update main repository with specific submodule versions for releases
-4. Tag releases in main repository for deployment coordination
 
 ## Deployment
 
-- **Frontend**: Cloudflare Workers (via `frontend/` repository CI/CD)
-- **Backend**: Zuplo GitOps (via `backend/` repository CI/CD)
-- **Orchestration**: Use tags in this repository to coordinate releases
+### Frontend (Tag-based)
+```bash
+cd frontend
+npm run tag:create       # Interactive tag creation (qa/prod)
+npm run tag:status       # Check deployment status
+```
+
+### Backend (Branch-based GitOps)
+```bash
+cd backend
+npm run promote:qa       # develop → preview (QA)
+npm run release:production  # preview → main (Production)
+```
+
+## Subscription Plans
+
+| Plan | Credits | Team Size | Use Case |
+|------|---------|-----------|----------|
+| **Trial** | 15 one-time | 1 | New user exploration |
+| **Individual** | 100/month | 1 | Personal use |
+| **Team** | 500/month | 5 | Small teams |
+| **Custom 30** | 2,000/month | 30 | Organizations |
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [`CLAUDE.md`](./CLAUDE.md) | Development guidance for Claude Code |
+| [`FEATURES.md`](./FEATURES.md) | Complete feature catalog with implementation details |
+| [`TODO.md`](./TODO.md) | Active development tasks |
+| [`STRATEGIC_ENHANCEMENTS.md`](./STRATEGIC_ENHANCEMENTS.md) | Future optimizations and enhancements |
+| [`frontend/CLAUDE.md`](./frontend/CLAUDE.md) | Frontend-specific guidance |
+| [`backend/CLAUDE.md`](./backend/CLAUDE.md) | Backend-specific guidance |
 
 ## Repository Links
 
-- Frontend: https://github.com/altbe/icraft-front-v8
-- Backend: https://github.com/altgene/unico-api
+- **Main**: https://github.com/altbe/icraft-main
+- **Frontend**: https://github.com/altbe/icraft-front-v8
+- **Backend**: https://github.com/altgene/unico-api
+
+---
+
+*See [`FEATURES.md`](./FEATURES.md) for complete feature documentation.*

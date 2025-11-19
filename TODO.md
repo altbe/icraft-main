@@ -1,6 +1,6 @@
 # iCraftStories TODO
 
-**Last Updated:** November 16, 2025
+**Last Updated:** November 19, 2025
 **Project:** iCraftStories Monorepo (Frontend + Backend)
 
 ## ✅ CRITICAL BUGS - FIXED (2025-10-30)
@@ -32,8 +32,8 @@
   - **Validation**: All modern functions operational
   - **Status**: ✅ COMPLETE
 
-**Completion Report**: See `CREDIT_SYSTEM_CLEANUP_COMPLETE.md` for full details
-**Executive Summary**: See `EXECUTIVE_SUMMARY.md` for high-level overview
+**Completion Report**: See `docs-archive/2025-Q4-credit-system-cleanup/CREDIT_SYSTEM_CLEANUP_COMPLETE.md`
+**Executive Summary**: See `docs-archive/2025-Q4-credit-system-cleanup/EXECUTIVE_SUMMARY.md`
 **Completed**: 2025-10-30 (~3 hours total)
 
 ---
@@ -102,42 +102,75 @@
 
 ## 🎯 Future Enhancements - Backlog
 
-### Legal & Compliance
-- [ ] **Terms of Service System** (`implement-tos-system`)
-  - Database schema: `terms_of_service`, `tos_acceptances`
-  - Bilingual ToS support (EN/ES) with markdown content
-  - User acceptance flow (signup, existing users, team invitations)
-  - Audit trail for legal compliance
-  - Complete implementation plan available
-  - **Effort:** 2-3 weeks
-  - **Priority:** Medium (compliance)
-  - **See:** TOS_IMPLEMENTATION_PLAN.md (comprehensive 787-line plan)
+### Administrative Features (Gaps from FEATURES audit)
+- [ ] **Story Approval Workflow UI** - Database has `is_approved` field but no UI
+  - Create moderator dashboard to view pending stories
+  - Add approve/reject actions
+  - Currently: Stories auto-approved on sharing
+  - **Effort:** 1-2 weeks
+  - **Priority:** Low (moderation)
 
-## 🎯 Image Search Enhancements - IN PROGRESS
+- [ ] **PWA App Shortcuts** - Not configured in manifest
+  - Add shortcuts array to VitePWA config
+  - Quick actions: "Create Story", "My Library"
+  - **Effort:** 30 minutes
+  - **Priority:** Low (UX enhancement)
+  - **See:** `STRATEGIC_ENHANCEMENTS.md`
 
-### Completed (September 7, 2025)
-- [x] **Phase 1: Database Foundation**
+### Performance Optimizations
+- [ ] **CDN Image Transformation** - See `STRATEGIC_ENHANCEMENTS.md`
+  - Cloudflare Worker for on-the-fly resizing
+  - Thumbnails (300×300), previews (800×800)
+  - WebP conversion, quality optimization
+  - **Effort:** 1-2 days
+  - **Priority:** Low (performance)
+
+## 🎯 Image Search Enhancements - ✅ COMPLETE
+
+### All Phases Complete (November 2025)
+- [x] **Phase 1: Database Foundation** - September 2025
   - Deployed all schema to prod/non-prod environments
-  - Generated and stored 1,196 BGE-M3 embeddings
+  - Generated and stored 1,196 BGE-M3 embeddings (1024 dimensions)
   - Created 2,392 translations (EN/ES)
   - Added 20 categories with i18n support
   - Deployed `search_custom_images_vector` stored procedure
-  - Updated backend API to use new search function
 
-### Next Priority
-- [ ] **Phase 2: Query Embeddings**
-  - Implement Cloudflare Workers AI with @cf/baai/bge-m3
-  - Enable vector search in stored procedure
-  - Test multilingual semantic search
+- [x] **Phase 2: Query Embeddings** - November 2025
+  - Cloudflare Workers AI with @cf/baai/bge-m3 (`icraft-embeddings.ts`)
+  - Real-time query embedding generation
+  - Graceful fallback to text search
 
-- [ ] **Phase 3: Frontend Integration**
-  - Update UI components for language toggle
-  - Implement client-side caching
-  - Add offline support with IndexedDB
+- [x] **Phase 3: Frontend Integration** - November 2025
+  - ImageProxyService with rate limiting (100 req/60s)
+  - Client-side caching (IndexedDB + localStorage, 24h TTL)
+  - UnifiedImageSearch component with categories
+
+**Future Enhancement**: CDN image transformation (see `STRATEGIC_ENHANCEMENTS.md`)
 
 ## ✅ Recently Completed
 
 ### November 2025
+
+#### Terms of Service System
+- [x] **TOS Implementation Complete** - October 2025
+  - Database: `terms_of_service` and `tos_acceptances` tables deployed
+  - Backend: `tos-service.ts` module with 4 API endpoints
+  - Frontend: `TosAcceptanceDialog.tsx` component with bilingual support (EN/ES)
+  - Production: Version 2.0 active with 11 user acceptances
+  - Team invitation flow integration complete
+  - **Status**: ✅ FULLY IMPLEMENTED
+
+#### Backend Infrastructure & Bug Fixes
+- [x] **SVG Dimension Fix** - November 18
+  - **Problem**: 3,519 SVG records stored incorrect 1024×1024 dimensions instead of actual viewBox dimensions
+  - **Impact**: Transparent padding on canvas, incorrect aspect ratios
+  - **Solution**: Automated workflow to backfill historical data + prevention enhancement
+  - **Scripts**: 6 new automation scripts in `backend/scripts/`
+  - **Prevention**: Enhanced `unified-image-processor.py` with automatic SVG dimension extraction
+  - **Environments**: ✅ PROD (3,519 records) | ✅ NON-PROD (3,519 records)
+  - **Verification**: 0 records remaining with incorrect dimensions
+  - **Documentation**: `SVG_DIMENSION_FIX_SUMMARY.md`, `backend/docs-internal/operations/SVG-DIMENSION-FIX.md`
+  - **Status**: ✅ COMPLETE - Future uploads automatically handled
 
 #### Frontend SEO & Growth Optimization
 - [x] **Comprehensive SEO Implementation** - November 15
@@ -264,9 +297,9 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 8
-**Completed Tasks:** 40 (6 new in November 2025)
-**Completion Rate:** 83%
+**Active Tasks:** 11
+**Completed Tasks:** 44 (3 new in November 2025)
+**Completion Rate:** 80%
 
 ### By Category:
 - **Critical Issues:** 1 pending (webhook validation)
@@ -274,8 +307,10 @@
 - **Deployment:** 1 pending
 - **Infrastructure:** ✅ All complete (Stripe, Teams, Credits)
 - **Team Features:** ✅ All complete (Story/Credit Transfer, One-Team Enforcement)
-- **Frontend Features:** ✅ SEO, Security, Accessibility, PWA, Crisp Chat, Lint/Build Optimization (Nov 2025)
-- **Documentation:** ✅ Major cleanup complete (64 files archived)
+- **Frontend Features:** ✅ SEO, Security, Accessibility, PWA (92%), Crisp Chat, Lint/Build Optimization
+- **Image Search:** ✅ All phases complete (Nov 2025)
+- **Admin Features:** 3 pending (story approval UI, app shortcuts, CDN optimization)
+- **Documentation:** ✅ Major cleanup complete (99 files archived)
 
 ## 🎯 Sprint Planning Recommendations
 

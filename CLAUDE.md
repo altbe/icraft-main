@@ -35,7 +35,7 @@ This is a **monorepo with Git submodules**:
 ## Architecture Overview
 
 ### Frontend Stack
-- **Framework**: React 18.3.1 + TypeScript + Vite 6.1.0
+- **Framework**: React 18.3.1 + TypeScript + Vite 7
 - **Deployment**: Cloudflare Workers with static assets
 - **PWA**: VitePWA with service workers, offline-first IndexedDB storage
 - **UI**: Tailwind CSS + shadcn/ui components (ADHD/dyslexia-friendly design)
