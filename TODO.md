@@ -48,6 +48,21 @@
   - **Sentry Issues**: ICRAFT-FRONT-7A/7B/7C (153 events in 24h)
   - **Effort**: 1-2 hours
 
+- [ ] **Database Init Log Noise** - Reduce "Already initialized" warnings
+  - Change duplicate initialization logs from warn to debug
+  - DatabaseService reports 451 events in 24h for expected behavior
+  - **Effort**: 30 minutes
+
+- [ ] **Service Worker Update Notifications** - Reduce log severity
+  - SW update notifications generating 72 events in 24h
+  - Consider moving to debug level or reducing frequency
+  - **Effort**: 30 minutes
+
+- [ ] **Sync Service Log Noise** - Reduce background sync info logs
+  - SimplifiedSyncService generating 110 info events in 24h
+  - Move routine sync logs to debug level
+  - **Effort**: 30 minutes
+
 - [x] **Fix Lint Errors** - ✅ COMPLETED (November 16, 2025)
   - Reduced from 596 errors to 0 errors, 254 warnings
   - Enabled ESLint caching (`--cache` flag) for faster linting
