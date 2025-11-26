@@ -186,13 +186,26 @@ Complete catalog of implemented features in the iCraftStories platform.
 - **Compliance Ready**: Timestamped acceptances with user metadata
 
 ### Content Moderation
-- **Community Moderation**: Moderators can delete community stories
+- **Community Moderation**: Moderators can delete community stories via admin endpoint
 - **Content Filtering**: Prompt sanitization and AI service content policies (Stability AI 403 handling)
 - **Activity Logging**: Complete activity trail in database for audit compliance
 
+### User Management (✅ Implemented November 2025)
+- **Admin Authorization**: Centralized `requireAdminUser()` pattern with database-backed role verification
+- **User Dashboard**: Comprehensive admin interface with search, filtering, and statistics
+  - Real-time search across email, name, and team
+  - Stats dashboard (total users, active subscriptions, team members, admins)
+  - Subscription status with color-coded badges
+  - Team affiliation and role display
+  - Credit balance indicators
+  - Activity timestamps (created, last sign-in)
+- **Custom Plan Eligibility**: Invite-only subscription management
+  - Grant/revoke access to custom plans (e.g., Custom 30)
+  - Eligibility tracking with expiration dates
+  - Admin notes for sales context
+
 ### Partial/Planned Features
 - **Story Approval Workflow**: Database field exists (`is_approved`), but approval UI not implemented - stories auto-approved on sharing
-- **User Management Dashboard**: Admin route guard exists, but full dashboard not implemented
 - **Analytics Dashboard**: Activity data logged, but user-facing dashboard not implemented
 
 ## 📱 Technical Capabilities
@@ -241,7 +254,7 @@ Complete catalog of implemented features in the iCraftStories platform.
 - **Image Search**: BGE-M3 semantic search with pgvector
 
 ### Partial Implementation
-- **Admin Features**: Basic moderation (delete stories), but no approval workflow or dashboard
+- **Admin Features**: User management dashboard and custom plan eligibility complete (Nov 2025); story approval workflow pending
 - **Content Filtering**: Passive only (prompt sanitization, AI service rejections)
 
 ### Architecture Decisions

@@ -173,6 +173,31 @@
 
 ### November 2025
 
+#### Admin Features Implementation
+- [x] **User Management Dashboard & Custom Plan Eligibility** - November 26, 2025
+  - **Backend**: Admin authorization pattern with `requireAdminUser()` utility
+    - Centralized auth check using Supabase Admin API
+    - Database-backed role verification from `user_profiles.is_admin`
+    - Consistent pattern across all admin endpoints
+  - **Backend Endpoints**: User management and eligibility APIs
+    - `GET /admin/users` - List users with search and pagination
+    - `GET /admin/users/:userId` - Get user details
+    - `GET /admin/eligibility` - List custom plan eligibility grants
+    - `POST /admin/eligibility` - Grant custom plan access
+    - `DELETE /admin/eligibility/:eligibilityId` - Revoke eligibility
+  - **Frontend Dashboard**: Comprehensive admin interface (`AdminDashboard.tsx`)
+    - Real-time search across email, name, and team
+    - Stats dashboard (total users, active subscriptions, team members, admins)
+    - User table with subscription status, team affiliation, credits, activity timestamps
+    - Color-coded subscription badges (trial, active, canceled, past_due)
+  - **Custom Plan Eligibility**: Invite-only subscription management
+    - Grant/revoke access to custom plans (e.g., Custom 30)
+    - Eligibility tracking with optional expiration dates
+    - Admin notes for sales context
+    - Search and filter grants by email, plan type, notes
+  - **Documentation**: Updated FEATURES.md, backend CLAUDE.md, API reference
+  - **Status**: ✅ FULLY IMPLEMENTED
+
 #### Terms of Service System
 - [x] **TOS Implementation Complete** - October 2025
   - Database: `terms_of_service` and `tos_acceptances` tables deployed
@@ -320,7 +345,7 @@
 ## 📊 Progress Overview
 
 **Active Tasks:** 11
-**Completed Tasks:** 44 (3 new in November 2025)
+**Completed Tasks:** 45 (4 new in November 2025)
 **Completion Rate:** 80%
 
 ### By Category:
@@ -331,7 +356,7 @@
 - **Team Features:** ✅ All complete (Story/Credit Transfer, One-Team Enforcement)
 - **Frontend Features:** ✅ SEO, Security, Accessibility, PWA (92%), Crisp Chat, Lint/Build Optimization
 - **Image Search:** ✅ All phases complete (Nov 2025)
-- **Admin Features:** 3 pending (story approval UI, app shortcuts, CDN optimization)
+- **Admin Features:** ✅ User Management & Custom Plan Eligibility complete (Nov 2025); 2 pending (story approval UI, PWA app shortcuts)
 - **Documentation:** ✅ Major cleanup complete (99 files archived)
 
 ## 🎯 Sprint Planning Recommendations
