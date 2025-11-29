@@ -8,6 +8,7 @@ Archived to keep the main CLAUDE.md file focused and performant while preserving
 ## Archive Structure
 
 ### 2025 Q4 (October - December 2025)
+- [`2025-11-subscription-sync-signature-fix.md`](./2025-Q4/2025-11-subscription-sync-signature-fix.md) - Fixed function signature mismatch in subscription sync cron job
 - [`2025-11-uuid-text-fix.md`](./2025-Q4/2025-11-uuid-text-fix.md) - PostgreSQL UUID/TEXT type mismatch resolution
 - [`2025-11-clerk-webhook-decommission.md`](./2025-Q4/2025-11-clerk-webhook-decommission.md) - Migration from Zuplo to Supabase Edge Functions
 - [`2025-11-trial-credit-allocation-fix.md`](./2025-Q4/2025-11-trial-credit-allocation-fix.md) - Fixed credit allocation for trial-to-paid transitions

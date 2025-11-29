@@ -113,6 +113,7 @@ See [`docs-archive/work-sessions/README.md`](./docs-archive/work-sessions/README
 - ✅ **Service Worker**: WWW subdomain bypass for Cloudflare redirects
 
 #### Backend (November 2025)
+- ✅ Subscription sync function signature mismatch fixed (2025-11-29)
 - ✅ UUID/TEXT type mismatch fixed in PostgreSQL functions
 - ✅ Clerk webhook migrated to Supabase Edge Function
 - ✅ Trial-to-active credit allocation automated
