@@ -12,7 +12,7 @@ Complete catalog of implemented features in the iCraftStories platform.
 - **AI Image Generation**: Stability AI illustrations with consistent character design
 - **Character-Based Stories**: Generate stories featuring user-defined characters
 - **Social Skills Integration**: Create educational stories focused on specific social skills
-- **Multi-Language Support**: English and Spanish story generation
+- **Multi-Language Support**: English and Spanish story generation with automatic TTS language detection
 - **Customizable Length**: Control story length (1-12 pages)
 - **Style Consistency**: Maintain character appearance across all pages
 
@@ -32,7 +32,7 @@ Complete catalog of implemented features in the iCraftStories platform.
 - **Page Image Regeneration**: Regenerate individual page illustrations
 - **Custom Image Upload**: Upload and use personal images in stories
 - **Image Optimization**: Automatic image processing and cloud storage
-- **Audio Generation**: Text-to-speech narration using ElevenLabs
+- **Audio Generation**: Text-to-speech narration using ElevenLabs (multilingual - EN/ES auto-detection)
 - **PDF Export**: Export stories as downloadable PDF files
 
 ### Image Library & Search
@@ -156,6 +156,8 @@ Complete catalog of implemented features in the iCraftStories platform.
 
 ### Personalization
 - **Language Selection**: English and Spanish interface support
+- **URL-Based Language Switching**: Direct language access via `?lng=es` or `?lng=en` URL parameters
+- **Language Detection**: Automatic browser language detection with localStorage persistence
 - **Theme Customization**: Personal preference settings
 - **User Profiles**: Comprehensive user account management
 - **Activity Dashboard**: Personal usage statistics and history

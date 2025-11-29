@@ -1,6 +1,6 @@
 # iCraftStories TODO
 
-**Last Updated:** November 19, 2025
+**Last Updated:** November 29, 2025
 **Project:** iCraftStories Monorepo (Frontend + Backend)
 
 ## ✅ CRITICAL BUGS - FIXED (2025-10-30)
@@ -172,6 +172,22 @@
 ## ✅ Recently Completed
 
 ### November 2025
+
+#### Internationalization & Language Support Enhancements
+- [x] **URL-Based Language Switching** - November 29
+  - **Feature**: Added `?lng=es` and `?lng=en` URL parameters for direct language access
+  - **Fix**: Corrected i18next initialization to allow LanguageDetector to work properly
+  - **Issue**: In incognito mode, explicit `lng` setting overrode URL parameter detection
+  - **Solution**: Removed hardcoded `lng` from i18next init, let LanguageDetector handle detection
+  - **Detection Order**: querystring (?lng=es) → localStorage → navigator browser language
+  - **File**: `frontend/src/i18n.ts`
+
+- [x] **Multilingual TTS Support** - November 29
+  - **Feature**: ElevenLabs text-to-speech now supports Spanish stories
+  - **Change**: Upgraded from `eleven_monolingual_v1` to `eleven_turbo_v2_5` model
+  - **Capability**: Auto-detects language from text (32 languages supported)
+  - **Benefits**: ~50% faster latency, lower cost, same voice quality
+  - **File**: `backend/modules/icraft-genAi.ts:2347`
 
 #### Admin Features Implementation
 - [x] **User Management Dashboard & Custom Plan Eligibility** - November 26, 2025
