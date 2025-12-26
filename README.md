@@ -60,6 +60,33 @@ npm run update           # Update submodules to latest
 npm run repo:status      # View repo and submodule status
 ```
 
+## Environment Setup (Optional)
+
+Basic development (`npm run dev`) works without additional configuration.
+
+For scripts requiring API access (migrations, data imports), you need secrets:
+
+**Option 1: dotfiles-claude (recommended)**
+```bash
+git clone git@github.com:altbe/dotfiles-claude.git ~/dotfiles-claude
+# Follow setup instructions in dotfiles-claude/README.md
+# Then run: secrets (loads env vars from Bitwarden)
+```
+
+**Option 2: Manual environment variables**
+```bash
+export SUPABASE_SERVICE_ROLE_KEY_PROD=...
+export STRIPE_LIVE_SECRET_KEY=...
+export CLERK_LIVE_API_KEY=...
+# See dotfiles-claude/README.md for full list
+```
+
+**Option 3: Backend local config**
+```bash
+# Configure backend/local-config/api-keys.json
+# See backend/CLAUDE.md for details
+```
+
 ## Deployment
 
 ### Frontend (Tag-based)
