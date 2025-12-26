@@ -32,6 +32,36 @@ This is a **monorepo with Git submodules**:
    - Frontend: `cd frontend && npm run tag:create` (select 'prod')
    - Backend: `cd backend && npm run release:production`
 
+## MCP Server Configuration
+
+**IMPORTANT**: Claude Code MCP servers (Supabase, Stripe, Clerk) require environment variables to be set before starting Claude Code.
+
+### Setup (One-time)
+```bash
+# Install dotfiles-claude
+git clone git@github.com:altbe/dotfiles-claude.git ~/dotfiles-claude
+
+# Follow setup instructions
+cd ~/dotfiles-claude && cat README.md
+```
+
+### Before Each Session
+```bash
+# Load secrets from Bitwarden (run in terminal before starting Claude Code)
+secrets  # alias for: source ~/dotfiles-claude/scripts/load-secrets.sh
+
+# Verify secrets are loaded
+~/dotfiles-claude/scripts/verify-env.sh
+```
+
+### If MCP Servers Fail to Connect
+If you see MCP connection errors in Claude Code:
+1. Ensure you ran `secrets` in the terminal before launching Claude Code
+2. Verify env vars: `echo $SUPABASE_ACCESS_TOKEN | head -c 20`
+3. Check Bitwarden is unlocked: `bw status`
+
+See `README.md` → "Environment Setup" for alternative options.
+
 ## Architecture Overview
 
 ### Frontend Stack
