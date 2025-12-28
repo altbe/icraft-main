@@ -80,17 +80,30 @@
 
 ## 📍 High Priority - Next Sprint
 
-### Clerk Integration Optimization
-- [ ] **Bidirectional User Metadata Sync** (`add-user-metadata-webhook`)
-  - Enhance `/modules/icraft-clerk.ts` webhook
-  - Sync preferences between Clerk metadata and `user_profiles.preferences`
-  - Current: One-way sync (Clerk → Supabase only)
-  - **Effort:** 4-6 hours
+### Clerk Integration - ✅ VALIDATED (December 28, 2025)
 
-- [ ] **Preferences Sync Integration** (`sync-preferences-clerk-local`)
-  - Update `/modules/user-preferences.ts` for bidirectional sync
-  - Modify frontend to read from Clerk metadata when available
-  - **Effort:** 3-4 hours
+**Architecture Review Complete** - Current one-way sync is correct:
+- Clerk is authoritative for **identity** (auth, email, name)
+- Supabase is authoritative for **application data** (preferences, language, stories)
+- No duplication or sync conflicts
+
+**Validated via MCP tools:**
+- All Clerk users have matching Supabase profiles (email, display_name synced correctly)
+- `clerk-webhook` Edge Function (v15) handles user lifecycle events
+- Preferences API (`GET/PATCH /users/preferences`) fully functional
+- Clerk `public_metadata`/`unsafe_metadata` intentionally unused (Supabase is SSOT)
+
+- [x] **Bidirectional User Metadata Sync** - ⚪ NOT NEEDED
+  - **Analysis**: Clerk metadata is unused (empty `{}` for all users)
+  - **Reason**: Supabase is single source of truth for preferences
+  - **Current State**: One-way sync (Clerk → Supabase) is correct architecture
+  - **Decision**: Removed from backlog - adds complexity without user benefit
+
+- [x] **Preferences Sync Integration** - ✅ ALREADY WORKING
+  - **Backend**: `user-preferences.ts` with `GET/PATCH /users/preferences` endpoints
+  - **Frontend**: `UserPreferencesService.ts` calls API endpoints
+  - **Database**: `user_profiles.preferences` JSONB column exists
+  - **Decision**: Marked complete - implementation exists and works
 
 ## 🔧 Medium Priority - Technical Debt
 
@@ -351,14 +364,14 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 9
-**Completed Tasks:** 50 (5 new in December 2025)
-**Completion Rate:** 85%
+**Active Tasks:** 7
+**Completed Tasks:** 52 (7 new in December 2025)
+**Completion Rate:** 88%
 
 ### By Category:
 - **Critical Issues:** ✅ All complete (log noise fixed Dec 2025)
 - **Backend Validation:** ✅ Complete (webhooks validated Dec 28, 2025)
-- **Integration:** 4 pending (all Clerk-related)
+- **Integration:** ✅ Clerk sync validated (Dec 28, 2025) - 2 items closed (not needed/already working)
 - **Infrastructure:** ✅ All complete (Stripe, Teams, Credits)
 - **Team Features:** ✅ All complete (Story/Credit Transfer, One-Team Enforcement)
 - **Frontend Features:** ✅ SEO, Security, Accessibility, PWA, Crisp Chat, Lint/Build, Log Noise
@@ -372,21 +385,23 @@
 1. Remove deprecated `/icraft-stripe-webhook` endpoint (safe after 2026-01-28)
 
 ### Medium Priority
-1. Implement bidirectional Clerk metadata sync
-2. Remove custom invitation UI (use Clerk Organizations only)
-3. Audit Clerk API dependencies
+1. Remove custom invitation UI (use Clerk Organizations only)
+2. Audit Clerk API dependencies
 
 ### Backlog
 1. Testing framework setup
 2. Story approval workflow UI
 3. PWA app shortcuts
+4. CDN image transformation
 
 ## 📝 Notes
 
 - **Log noise issues resolved** - Crisp, IndexedDB, Sync all fixed (Dec 2025)
 - **Lint issues resolved** - 0 errors, build optimizations complete (Nov 16, 2025)
 - **Testing framework** - Moved to backlog, not blocking production
-- **Clerk optimizations** are nice-to-have but not critical (existing sync works)
+- **Clerk sync validated** - One-way sync (Clerk → Supabase) is correct architecture (Dec 28, 2025)
+  - Bidirectional sync NOT needed - Supabase is SSOT for preferences
+  - Preferences API already working via `/users/preferences` endpoints
 - **Deprecated webhook** - Safe to remove after 2026-01-28 (90-day grace period)
 - **Keep audit tables** even when removing duplicate UI components
 
