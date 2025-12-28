@@ -232,7 +232,7 @@ VITE_SENTRY_DSN            # Sentry error tracking
 ## Documentation References
 
 ### Requirements & Architecture
-- `docs-archive/2025-Q4-team-invitations/TEAM_MEMBER_REQUIREMENTS.md` - Team collaboration requirements
+- `docs/TEAM_MEMBER_REQUIREMENTS.md` - Team collaboration requirements
 - `FEATURES.md` - Complete feature list
 - `backend/TARGET-STATE-ARCHITECTURE.md` - Target architecture
 - `backend/CREDIT_SYSTEM_CONSOLIDATED.md` - Credit system implementation

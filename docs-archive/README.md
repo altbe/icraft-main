@@ -357,21 +357,23 @@ If archived documentation becomes relevant again:
 
 ## Current Active Documentation
 
-After archiving, these files remain in the root directory:
+After archiving, these files remain active:
 
-### Core Documentation (4)
+### Root Level - Core Documentation (5)
 - `CLAUDE.md` - Claude Code development guidance
 - `README.md` - Project overview
 - `FEATURES.md` - Feature catalog
 - `TODO.md` - Task tracking
-
-### Strategic Planning (1)
 - `STRATEGIC_ENHANCEMENTS.md` - Future performance optimizations and feature enhancements
 
-### Setup Guides (1)
-- `PLAYWRIGHT_SETUP.md` - Playwright testing setup
+### `docs/` Folder - Active Guides & References (5)
+- `CLOUDFLARE-ACCESS-SETUP.md` - Cloudflare Access setup for dev/QA environments
+- `PLAYWRIGHT_SETUP.md` - Playwright browser testing setup
+- `TEAM_MEMBER_REQUIREMENTS.md` - Team collaboration requirements (active reference)
+- `WEB-FILTER-CATEGORIZATION-GUIDE.md` - Web filter vendor submission tracking
+- `WEB-FILTER-CATEGORIZATION-GUIDE.pdf` - PDF version for vendor submissions
 
-**Total Active Files**: 6
+**Total Active Files**: 10
 
 ---
 
@@ -385,6 +387,6 @@ After archiving, these files remain in the root directory:
 ---
 
 **Archive Created**: 2025-10-26
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-12-28
 **Maintainer**: Development team
 **Review Schedule**: Quarterly or after major feature releases
