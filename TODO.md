@@ -114,11 +114,13 @@
   - Would improve production confidence but not blocking
   - **Effort:** 1-2 weeks for comprehensive test suite
 
-- [ ] **Remove Custom Invitation UI** (`remove-custom-invitation-ui`)
-  - Remove duplicate invitation forms in frontend
-  - Keep `team_invitations` table for audit trail
-  - Use only Clerk Organizations for team management
-  - **Effort:** 2-3 hours
+- [x] **Custom Invitation UI** - ✅ VALIDATED (December 28, 2025)
+  - **Finding**: UI is NOT duplicate - it wraps Clerk Organizations API
+  - **Architecture**: Frontend → Backend (`clerk-team-invitations.ts`) → Clerk API
+  - **Database**: `team_invitations` table NOT used for invitations (Clerk is SSOT)
+  - **Benefits**: Custom styling, real-time validation, our notification system
+  - **Alternative**: Could use Clerk's `<OrganizationProfile>` component (UX preference, not necessity)
+  - **Decision**: No changes needed - current architecture is correct
 
 - [ ] **Audit Clerk API Dependencies** (`audit-clerk-api-dependencies`)
   - Review services for unnecessary Clerk API calls
@@ -364,14 +366,14 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 7
-**Completed Tasks:** 52 (7 new in December 2025)
-**Completion Rate:** 88%
+**Active Tasks:** 6
+**Completed Tasks:** 53 (8 new in December 2025)
+**Completion Rate:** 90%
 
 ### By Category:
 - **Critical Issues:** ✅ All complete (log noise fixed Dec 2025)
 - **Backend Validation:** ✅ Complete (webhooks validated Dec 28, 2025)
-- **Integration:** ✅ Clerk sync validated (Dec 28, 2025) - 2 items closed (not needed/already working)
+- **Integration:** ✅ Clerk validated (Dec 28, 2025) - sync correct, invitation UI wraps Clerk API
 - **Infrastructure:** ✅ All complete (Stripe, Teams, Credits)
 - **Team Features:** ✅ All complete (Story/Credit Transfer, One-Team Enforcement)
 - **Frontend Features:** ✅ SEO, Security, Accessibility, PWA, Crisp Chat, Lint/Build, Log Noise
@@ -385,8 +387,7 @@
 1. Remove deprecated `/icraft-stripe-webhook` endpoint (safe after 2026-01-28)
 
 ### Medium Priority
-1. Remove custom invitation UI (use Clerk Organizations only)
-2. Audit Clerk API dependencies
+1. Audit Clerk API dependencies
 
 ### Backlog
 1. Testing framework setup
@@ -403,7 +404,8 @@
   - Bidirectional sync NOT needed - Supabase is SSOT for preferences
   - Preferences API already working via `/users/preferences` endpoints
 - **Deprecated webhook** - Safe to remove after 2026-01-28 (90-day grace period)
-- **Keep audit tables** even when removing duplicate UI components
+- **Custom invitation UI validated** - NOT duplicate, wraps Clerk Organizations API (Dec 28, 2025)
+  - `team_invitations` table NOT used for invitations - Clerk is SSOT
 
 ---
 
