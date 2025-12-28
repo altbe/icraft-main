@@ -142,12 +142,12 @@
   - **Effort:** 1-2 weeks
   - **Priority:** Low (moderation)
 
-- [ ] **PWA App Shortcuts** - Not configured in manifest
-  - Add shortcuts array to VitePWA config
-  - Quick actions: "Create Story", "My Library"
-  - **Effort:** 30 minutes
-  - **Priority:** Low (UX enhancement)
-  - **See:** `STRATEGIC_ENHANCEMENTS.md`
+- [x] **PWA App Shortcuts** - ✅ COMPLETED (December 28, 2025)
+  - Added shortcuts array to VitePWA manifest config
+  - "Create Story" shortcut → `/library?action=create` with plus.png icon
+  - "My Library" shortcut → `/library` with library.png icon
+  - StoryLibrary handles `?action=create` to trigger story creation
+  - **Files**: `vite.config.ts`, `src/components/StoryLibrary.tsx`
 
 ### Performance Optimizations
 - [ ] **CDN Image Transformation** - See `STRATEGIC_ENHANCEMENTS.md`
@@ -370,9 +370,9 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 5
-**Completed Tasks:** 54 (9 new in December 2025)
-**Completion Rate:** 92%
+**Active Tasks:** 4
+**Completed Tasks:** 55 (10 new in December 2025)
+**Completion Rate:** 93%
 
 ### By Category:
 - **Critical Issues:** ✅ All complete (log noise fixed Dec 2025)
@@ -382,7 +382,7 @@
 - **Team Features:** ✅ All complete (Story/Credit Transfer, One-Team Enforcement)
 - **Frontend Features:** ✅ SEO, Security, Accessibility, PWA, Crisp Chat, Lint/Build, Log Noise
 - **Image Search:** ✅ All phases complete (Nov 2025)
-- **Admin Features:** ✅ User Management & Custom Plan Eligibility complete (Nov 2025); 2 pending (story approval UI, PWA app shortcuts)
+- **Admin Features:** ✅ User Management & Custom Plan Eligibility complete (Nov 2025); 1 pending (story approval UI)
 - **Documentation:** ✅ Major cleanup complete (99 files archived, obsolete refs fixed Dec 2025)
 
 ## 🎯 Next Actions
@@ -396,8 +396,7 @@
 ### Backlog
 1. Testing framework setup
 2. Story approval workflow UI
-3. PWA app shortcuts
-4. CDN image transformation
+3. CDN image transformation
 
 ## 📝 Notes
 
@@ -413,6 +412,8 @@
 - **Clerk API audit complete** - 12 endpoints used, 1 redundant call identified (Dec 28, 2025)
   - Frontend optimized (uses Clerk SDK caching)
   - Minor optimization available in `getUserTeams()` (not critical)
+- **PWA App Shortcuts** - Added "Create Story" and "My Library" quick actions (Dec 28, 2025)
+  - Works on Android, Chrome, Edge - long-press app icon to see shortcuts
 
 ---
 
