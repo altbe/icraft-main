@@ -80,16 +80,6 @@
 
 ## 📍 High Priority - Next Sprint
 
-### Deployment & Monitoring
-- [ ] **Production Deployment** - Deploy recent fixes and SDK upgrades
-  - Frontend: Create production tag via `npm run tag:create`
-  - Backend: Run `npm run release:production`
-  
-- [ ] **Performance Monitoring** - Check for regressions from SDK updates
-  - Monitor API response times
-  - Check frontend bundle size impact
-  - Verify PWA offline functionality
-
 ### Clerk Integration Optimization
 - [ ] **Bidirectional User Metadata Sync** (`add-user-metadata-webhook`)
   - Enhance `/modules/icraft-clerk.ts` webhook
@@ -361,9 +351,9 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 6
+**Active Tasks:** 9
 **Completed Tasks:** 50 (5 new in December 2025)
-**Completion Rate:** 89%
+**Completion Rate:** 85%
 
 ### By Category:
 - **Critical Issues:** ✅ All complete (log noise fixed Dec 2025)
