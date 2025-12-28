@@ -18,7 +18,7 @@ All documentation has been updated to reflect database-validated reality:
 
 ## 📋 Documentation Inventory
 
-### Top-Level Repository (`/home/g/_zdev/icraft-main/`)
+### Top-Level Repository (`./`)
 
 | File | Status | Alignment Check | Last Updated |
 |------|--------|----------------|--------------|

@@ -72,14 +72,14 @@ If any step fails, the script:
 
 ```bash
 # Install dependencies (if not already installed)
-cd /home/g/_zdev/icraft-main/scripts
+cd ./scripts
 npm install playwright
 ```
 
 ### Run the Script
 
 ```bash
-cd /home/g/_zdev/icraft-main/scripts
+cd ./scripts
 
 # Upload first story (for testing)
 node upload-stories-v2.js 1
@@ -255,7 +255,7 @@ Story Editor
 
 ## Additional Resources
 
-- Frontend code: `/home/g/_zdev/icraft-main/frontend/src/components/`
+- Frontend code: `frontend/src/components/`
   - `IllustrationSection.tsx` - Illustration buttons with selectors
   - `CanvasEditor.tsx` - Canvas editor with save/discard
   - `CanvasEditorToolbar.tsx` - Toolbar with upload button

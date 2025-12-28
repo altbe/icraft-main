@@ -14,7 +14,7 @@ Uses OpenAI API to parse markdown stories into structured JSON with cover coachi
 ### 1. Install dependencies
 
 ```bash
-cd /home/g/_zdev/icraft-main
+cd .
 # Dependencies already installed via npm install in scripts/
 ```
 

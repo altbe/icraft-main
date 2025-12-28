@@ -16,7 +16,7 @@ A `transfer_all_user_stories_to_team()` stored procedure that:
 
 ## Files Created
 
-✅ All files ready in `/home/g/_zdev/icraft-main/backend/sql/`:
+✅ All files ready in `backend/sql/`:
 
 1. **`story-transfer-implementation.sql`** - Main migration (run this in DB)
 2. **`test-story-transfer.sql`** - Test suite (run this to verify)
@@ -30,7 +30,7 @@ A `transfer_all_user_stories_to_team()` stored procedure that:
 
 ```bash
 # 1. Navigate to backend
-cd /home/g/_zdev/icraft-main/backend
+cd backend
 
 # 2. Apply migration to non-prod
 # Using Supabase MCP tool or psql:

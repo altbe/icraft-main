@@ -28,7 +28,7 @@
 ## 🚀 Usage
 
 ```bash
-cd /home/g/_zdev/icraft-main/scripts
+cd ./scripts
 
 # Test with first story
 node upload-stories-v2.js 1
@@ -63,7 +63,7 @@ node upload-stories-v2.js 1
 ✓ Already authenticated
 ✓ Application ready
 
-🎯 Uploading 1 stories from /home/g/_zdev/icraft-main/stories-tmp/processed
+🎯 Uploading 1 stories from ./stories-tmp/processed
 
 ================================================================================
 
@@ -102,7 +102,7 @@ Edit the top of `upload-stories-v2.js`:
 
 ```javascript
 const BASE_URL = 'https://dev.icraftstories.com';
-const STORIES_DIR = '/home/g/_zdev/icraft-main/stories-tmp/processed';
+const STORIES_DIR = './stories-tmp/processed';
 
 // Login credentials - UPDATE THESE with your credentials
 const LOGIN_EMAIL = 'your-email@example.com';

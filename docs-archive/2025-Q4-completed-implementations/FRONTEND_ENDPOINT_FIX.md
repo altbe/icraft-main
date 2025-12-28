@@ -105,7 +105,7 @@ async getTeamBalance(teamId: string, userId: string, token: string): Promise<num
 ### Compilation Check
 
 ```bash
-cd /home/g/_zdev/icraft-main/frontend
+cd frontend
 npm run compile
 ```
 

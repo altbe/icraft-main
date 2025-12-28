@@ -34,7 +34,7 @@ export SUPABASE_SERVICE_ROLE_KEY_PROD="<production service key>"
 
 ### Run Migration
 ```bash
-cd /home/g/_zdev/icraft-main
+cd .
 python3 scripts/migrate_stories.py
 ```
 
@@ -82,7 +82,7 @@ export SUPABASE_SERVICE_ROLE_KEY_PROD="<production service key>"
 
 ### Run Migration
 ```bash
-cd /home/g/_zdev/icraft-main
+cd .
 node scripts/migrate-community-stories.js
 ```
 
@@ -200,8 +200,8 @@ DROP TABLE IF EXISTS terms_of_service_snapshot_20251102;
 
 ## Migration Scripts Location
 
-- **Python**: `/home/g/_zdev/icraft-main/scripts/migrate_stories.py`
-- **Node.js**: `/home/g/_zdev/icraft-main/scripts/migrate-community-stories.js`
+- **Python**: `./scripts/migrate_stories.py`
+- **Node.js**: `./scripts/migrate-community-stories.js`
 
 ---
 

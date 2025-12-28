@@ -773,7 +773,7 @@ LIMIT 10;
 ### 4.3 Git Workflow
 
 ```bash
-cd /home/g/_zdev/icraft-main/backend
+cd backend
 
 # 1. Create feature branch
 git checkout -b feature/story-transfer-procedure

@@ -58,13 +58,13 @@ WHERE stripe_product_id = p_stripe_product_id;
 -- Team plan: 200 credits/month
 ```
 
-**Implementation**: `/home/g/_zdev/icraft-main/backend/sql/migrations/020_trial_to_active_credit_fix.sql`
+**Implementation**: `backend/sql/migrations/020_trial_to_active_credit_fix.sql`
 
 ### Edge Function Layer (Supabase)
 
 **Updated Function**: `stripe-webhook` (version 10)
 
-**File**: `/home/g/_zdev/icraft-main/backend/supabase/functions/stripe-webhook/index.ts`
+**File**: `backend/supabase/functions/stripe-webhook/index.ts`
 
 **Changes to `handleSubscriptionUpdated()`**:
 

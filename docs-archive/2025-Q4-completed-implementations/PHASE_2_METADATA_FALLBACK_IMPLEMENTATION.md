@@ -106,7 +106,7 @@ Successfully implemented graceful metadata fallback lookup with three-tier resol
 
 ### File Updated
 
-**`/home/g/_zdev/icraft-main/backend/supabase/functions/stripe-webhook/index.ts`**
+**`backend/supabase/functions/stripe-webhook/index.ts`**
 
 ### New Functions
 

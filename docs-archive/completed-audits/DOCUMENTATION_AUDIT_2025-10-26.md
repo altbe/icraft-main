@@ -404,7 +404,7 @@ Keep a document when:
 
 **Create Archive Structure**:
 ```bash
-cd /home/g/_zdev/icraft-main
+cd .
 mkdir -p docs-archive/2025-Q4-crisp-integration
 mkdir -p docs-archive/2025-Q4-team-collaboration
 mkdir -p docs-archive/2025-Q4-subscription-migration
@@ -464,7 +464,7 @@ mv CONFIRMATION_CHECKLIST.md docs-archive/completed-features/
 ### Step 2: Backend Repository (Priority 2)
 
 ```bash
-cd /home/g/_zdev/icraft-main/backend
+cd backend
 mkdir -p docs-archive/migrations-complete
 mkdir -p docs-archive/audits-complete
 
@@ -483,7 +483,7 @@ mv deploy_duplicate_prevention.md docs-archive/completed-features/
 ### Step 3: Frontend Repository (Priority 3)
 
 ```bash
-cd /home/g/_zdev/icraft-main/frontend
+cd frontend
 mkdir -p docs-archive/analyses-complete
 
 # Move completed analyses

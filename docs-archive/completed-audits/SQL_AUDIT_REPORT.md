@@ -428,7 +428,7 @@ Critical functions for team collaboration and credit system:
 
 1. **Archive Obsolete SQL Files**
    ```bash
-   cd /home/g/_zdev/icraft-main/backend/sql
+   cd backend/sql
    mkdir -p archive
 
    # Move unused files

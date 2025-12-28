@@ -654,7 +654,7 @@ done
 **Documentation Validation:**
 ```bash
 # Check documentation alignment
-cd /home/g/_zdev/icraft-main
+cd .
 
 # All status docs should show completion
 grep -E "Status:|Complete|Broken|Partial" \
