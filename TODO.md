@@ -1,6 +1,6 @@
 # iCraftStories TODO
 
-**Last Updated:** November 29, 2025
+**Last Updated:** December 28, 2025
 **Project:** iCraftStories Monorepo (Frontend + Backend)
 
 ## ✅ CRITICAL BUGS - FIXED (2025-10-30)
@@ -41,27 +41,27 @@
 ## 🚨 Critical - Immediate Actions
 
 ### Frontend (`frontend/`)
-- [ ] **Crisp Chat Resilience** - Add retry logic and reduce log severity
-  - Reduce Crisp chat error logs from error to warn/debug level
-  - Add retry logic for Crisp SDK load failures
-  - Handle "Invalid data" errors gracefully with session recovery
-  - **Sentry Issues**: ICRAFT-FRONT-7A/7B/7C (153 events in 24h)
-  - **Effort**: 1-2 hours
+- [x] **Crisp Chat Resilience** - ✅ COMPLETED (December 2025)
+  - Deferred Crisp loading and migrated console statements to logger
+  - Added retry logic for SDK load failures
+  - **Commit**: 365dbce
+  - **Verified**: 0 Crisp errors in Sentry (7-day check Dec 28)
 
-- [ ] **Database Init Log Noise** - Reduce "Already initialized" warnings
-  - Change duplicate initialization logs from warn to debug
-  - DatabaseService reports 451 events in 24h for expected behavior
-  - **Effort**: 30 minutes
+- [x] **Database Init Log Noise** - ✅ COMPLETED (December 2025)
+  - Reduced IndexedDB error cascade and sync noise
+  - Changed IndexedDB-related logs from error to warn
+  - Reduced iOS Safari IndexedDB validation log noise
+  - **Commits**: a386c41, d655a9d, f902ba2
+  - **Verified**: 0 IndexedDB errors in Sentry (7-day check Dec 28)
 
-- [ ] **Service Worker Update Notifications** - Reduce log severity
-  - SW update notifications generating 72 events in 24h
-  - Consider moving to debug level or reducing frequency
-  - **Effort**: 30 minutes
+- [x] **Service Worker Update Notifications** - ✅ COMPLETED (December 2025)
+  - Log severity reduced with above IndexedDB fixes
+  - **Verified**: No related Sentry issues
 
-- [ ] **Sync Service Log Noise** - Reduce background sync info logs
-  - SimplifiedSyncService generating 110 info events in 24h
-  - Move routine sync logs to debug level
-  - **Effort**: 30 minutes
+- [x] **Sync Service Log Noise** - ✅ COMPLETED (December 2025)
+  - Filtered canceled sync requests in SimplifiedSyncService
+  - **Commit**: 37b7079
+  - **Verified**: No related Sentry issues
 
 - [x] **Fix Lint Errors** - ✅ COMPLETED (November 16, 2025)
   - Reduced from 596 errors to 0 errors, 254 warnings
@@ -360,44 +360,44 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 11
-**Completed Tasks:** 45 (4 new in November 2025)
-**Completion Rate:** 80%
+**Active Tasks:** 7
+**Completed Tasks:** 49 (4 new in December 2025)
+**Completion Rate:** 87%
 
 ### By Category:
-- **Critical Issues:** 1 pending (webhook validation)
+- **Critical Issues:** ✅ All complete (log noise fixed Dec 2025)
+- **Backend Validation:** 1 pending (webhook validation)
 - **Integration:** 4 pending (all Clerk-related)
-- **Deployment:** 1 pending
 - **Infrastructure:** ✅ All complete (Stripe, Teams, Credits)
 - **Team Features:** ✅ All complete (Story/Credit Transfer, One-Team Enforcement)
-- **Frontend Features:** ✅ SEO, Security, Accessibility, PWA (92%), Crisp Chat, Lint/Build Optimization
+- **Frontend Features:** ✅ SEO, Security, Accessibility, PWA, Crisp Chat, Lint/Build, Log Noise
 - **Image Search:** ✅ All phases complete (Nov 2025)
 - **Admin Features:** ✅ User Management & Custom Plan Eligibility complete (Nov 2025); 2 pending (story approval UI, PWA app shortcuts)
-- **Documentation:** ✅ Major cleanup complete (99 files archived)
+- **Documentation:** ✅ Major cleanup complete (99 files archived, obsolete refs fixed Dec 2025)
 
-## 🎯 Sprint Planning Recommendations
+## 🎯 Next Actions
 
-### Sprint 1 (This Week)
-1. ✅ Fix frontend lint errors (COMPLETED - November 16, 2025)
-2. Validate webhook endpoints
-3. Deploy to production (includes recent lint/build optimizations)
+### High Priority
+1. Validate webhook endpoints (Stripe/Clerk Edge Functions)
+2. Remove deprecated `/icraft-stripe-webhook` endpoint (safe after 2026-01-28)
 
-### Sprint 2 (Next Week)
-1. Implement bidirectional Clerk sync
-2. Performance monitoring setup
-3. Code cleanup (remove duplicate UI)
+### Medium Priority
+1. Implement bidirectional Clerk metadata sync
+2. Remove custom invitation UI (use Clerk Organizations only)
+3. Audit Clerk API dependencies
 
-### Sprint 3 (Following Week)
-1. API dependency audit
-2. Documentation updates
-3. Testing framework (optional - moved to medium priority)
+### Backlog
+1. Testing framework setup
+2. Story approval workflow UI
+3. PWA app shortcuts
 
 ## 📝 Notes
 
+- **Log noise issues resolved** - Crisp, IndexedDB, Sync all fixed (Dec 2025)
 - **Lint issues resolved** - 0 errors, build optimizations complete (Nov 16, 2025)
-- **Testing framework** - Moved to medium priority, not blocking production
-- **Monitor production closely** after SDK upgrades deployment
+- **Testing framework** - Moved to backlog, not blocking production
 - **Clerk optimizations** are nice-to-have but not critical (existing sync works)
+- **Deprecated webhook** - Safe to remove after 2026-01-28 (90-day grace period)
 - **Keep audit tables** even when removing duplicate UI components
 
 ---
