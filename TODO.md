@@ -22,7 +22,7 @@
 
 - [x] **✅ DEPRECATED Legacy Webhook** - `/icraft-stripe-webhook`
   - **Action**: Endpoint now returns 410 Gone with migration instructions
-  - **Archive**: `backend/legacy-webhooks-archive/` with complete rollback docs
+  - **Archive**: `backend/docs-archive/2025-Q4-webhook-migration/` with migration docs
   - **Status**: ✅ DEPRECATED (2025-10-30)
   - **Safe to Remove**: 2026-01-28 (90 days)
 
@@ -232,7 +232,7 @@
   - **Prevention**: Enhanced `unified-image-processor.py` with automatic SVG dimension extraction
   - **Environments**: ✅ PROD (3,519 records) | ✅ NON-PROD (3,519 records)
   - **Verification**: 0 records remaining with incorrect dimensions
-  - **Documentation**: `SVG_DIMENSION_FIX_SUMMARY.md`, `backend/docs-internal/operations/SVG-DIMENSION-FIX.md`
+  - **Documentation**: `backend/docs-internal/operations/SVG-DIMENSION-FIX.md`
   - **Status**: ✅ COMPLETE - Future uploads automatically handled
 
 #### Frontend SEO & Growth Optimization
