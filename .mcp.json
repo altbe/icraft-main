@@ -1,0 +1,76 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--access-token",
+        "${SUPABASE_ACCESS_TOKEN}"
+      ]
+    },
+    "stripe-test": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@stripe/mcp",
+        "--tools=all"
+      ],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_TEST_SECRET_KEY}"
+      }
+    },
+    "stripe-live": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@stripe/mcp",
+        "--tools=all"
+      ],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_LIVE_SECRET_KEY}"
+      }
+    },
+    "playwright-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--browser",
+        "webkit"
+      ],
+      "env": {
+        "PLAYWRIGHT_BROWSERS_PATH": "${HOME}/.cache/ms-playwright"
+      }
+    },
+    "sentry-mcp": {
+      "type": "http",
+      "url": "https://mcp.sentry.dev/mcp"
+    },
+    "clerk": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@clerk/clerk-mcp@latest"
+      ],
+      "env": {
+        "CLERK_API_KEY": "${CLERK_PROJECT_API_KEY}"
+      }
+    },
+    "clerk-live": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@clerk/clerk-mcp@latest"
+      ],
+      "env": {
+        "CLERK_API_KEY": "${CLERK_LIVE_API_KEY}"
+      }
+    }
+  }
+}
