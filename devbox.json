@@ -386,8 +386,6 @@
   "env": {
     "NODE_ENV":    "development",
     "FORCE_COLOR": "1",
-    "HF_HOME": "/home/g/hf-cache",
-    "HUGGINGFACE_HUB_CACHE": "/home/g/hf-cache/hub",
     "VLLM_WORKER_MULTIPROC_METHOD": "spawn"
   }
 }
