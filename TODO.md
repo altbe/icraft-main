@@ -122,11 +122,15 @@
   - **Alternative**: Could use Clerk's `<OrganizationProfile>` component (UX preference, not necessity)
   - **Decision**: No changes needed - current architecture is correct
 
-- [ ] **Audit Clerk API Dependencies** (`audit-clerk-api-dependencies`)
-  - Review services for unnecessary Clerk API calls
-  - Use local cached data where possible
-  - Reduce external API dependencies
-  - **Effort:** 4-5 hours
+- [x] **Audit Clerk API Dependencies** - ✅ COMPLETED (December 28, 2025)
+  - **Backend**: 12 Clerk API endpoints used across 3 modules
+  - **Finding**: 1 redundant call in `getUserTeams()` (team-management.ts:126-159)
+    - Makes both database query AND Clerk API call, then merges results
+    - Clerk call is redundant - database is authoritative via webhook sync
+    - **Recommendation**: Remove Clerk API call, use only database query
+  - **Frontend**: Optimized - uses only Clerk SDK hooks (cached internally)
+  - **Essential calls** (keep): lazy profile creation, session revocation, invitations
+  - **Decision**: Minor optimization available, not critical
 
 ## 🎯 Future Enhancements - Backlog
 
@@ -366,9 +370,9 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 6
-**Completed Tasks:** 53 (8 new in December 2025)
-**Completion Rate:** 90%
+**Active Tasks:** 5
+**Completed Tasks:** 54 (9 new in December 2025)
+**Completion Rate:** 92%
 
 ### By Category:
 - **Critical Issues:** ✅ All complete (log noise fixed Dec 2025)
@@ -387,7 +391,7 @@
 1. Remove deprecated `/icraft-stripe-webhook` endpoint (safe after 2026-01-28)
 
 ### Medium Priority
-1. Audit Clerk API dependencies
+1. Remove redundant Clerk API call in `getUserTeams()` (optional optimization)
 
 ### Backlog
 1. Testing framework setup
@@ -406,6 +410,9 @@
 - **Deprecated webhook** - Safe to remove after 2026-01-28 (90-day grace period)
 - **Custom invitation UI validated** - NOT duplicate, wraps Clerk Organizations API (Dec 28, 2025)
   - `team_invitations` table NOT used for invitations - Clerk is SSOT
+- **Clerk API audit complete** - 12 endpoints used, 1 redundant call identified (Dec 28, 2025)
+  - Frontend optimized (uses Clerk SDK caching)
+  - Minor optimization available in `getUserTeams()` (not critical)
 
 ---
 
