@@ -1,12 +1,15 @@
 # Group Stories Design v2
 
 **Status:** Draft
+**Version:** 1.2
 **Created:** 2025-01-09
 **Last Updated:** 2025-01-09
 
 ## Overview
 
 This document specifies the design changes to AI story generation to support distinct skill sets and page frameworks for Individual (Social) Stories versus Group Stories.
+
+**Internal Summary**: Group Stories are whole-group, image-led stories with no names, no individual POV, and 40–60 words per page, designed for shared learning and reuse.
 
 ## Design Principles
 
@@ -108,21 +111,98 @@ Dynamic framework based on user-selected page count:
 **1 page:**
 - Single concise story combining all elements
 
-### Group Story Framework (New - Fixed 6 Pages)
+### Group Story Framework (New - Fixed 6-Page Structure + Separate Cover)
 
 This framework is based on Carol Gray's Social Story model adapted for group dynamics.
 
-| Page | Purpose | Carol's Model Element | Content Focus |
-|------|---------|----------------------|---------------|
-| Cover | Shared Group Moment | Scene setting | Group together, introducing the setting |
-| Page 1 | Situation | Descriptive | What's happening to the group |
-| Page 2 | Perspective | Perspective | How different members see/understand it |
-| Page 3 | Feeling | Affirmative | Emotions within the group, validation |
-| Page 4 | Positive Choice | Directive/Cooperative | Group decides on positive action |
-| Page 5 | Community Outcome | Consequence | Results of working together |
-| Page 6 | Reinforcement | Control | Carry-forward lesson, reflection |
+**LOCKED: 6 story pages + separate cover = 7 pages displayed**
 
-**Important:** This framework must not change. Group stories are always 6 pages (plus cover).
+**Technical Implementation:**
+- `numPages` = 6 (story pages only)
+- Cover is handled via `cover_page_coaching_content` and `cover_page_image_instruction` fields
+- `pages` array contains only Pages 1-6 (story pages), NOT the cover
+
+| Page | Purpose | Carol's Model Element | Content Focus | Constraints |
+|------|---------|----------------------|---------------|-------------|
+| **Cover** | Title + Image | Scene setting | Calm establishing group moment | Handled via `cover_page_*` fields; NOT in pages array |
+| **Page 1** | Situation | Descriptive | Describes common shared scenario | Neutral, descriptive; no emotions/solutions |
+| **Page 2** | Perspective | Perspective | Shows neutral differences in noticing/thinking | No right vs. wrong; uses "some…others…" |
+| **Page 3** | Feeling | Affirmative | Uses plural/range-based feelings | Gentle, non-escalated emotional tone |
+| **Page 4** | Positive Choice | Directive/Cooperative | Models 1-2 helpful options | Focus on effort, not correctness; no directives |
+| **Page 5** | Community Outcome | Consequence | Shows shared benefit to group | Emphasizes belonging, fairness; no praise/rewards |
+| **Page 6** | Reinforcement | Control | Forward-looking and reusable | Collective language only; no reflection questions |
+
+**Important:** This framework must not change. Group stories always display 7 pages (cover + 6 story pages), but `numPages` = 6 since cover is handled separately.
+
+### Story Text Rules (All Pages 1-6)
+
+**Word Count (LOCKED):**
+- Target: **40-60 words** per page
+- If generated text exceeds limits, system auto-shortens or regenerates
+
+**Language Rules:**
+| Rule | Description |
+|------|-------------|
+| No character names | No proper names anywhere in text |
+| No first-person child POV | No "I," "my" as narrator |
+| Group-based language | Use "we", "the group", "children", "some…others…" |
+| No directives | No "must," "should," "have to" |
+| No dialogue | No quotation marks or direct speech |
+| No time jumps | No "later that week," "after many days" |
+| Non-clinical language | No diagnostic or clinical terminology |
+
+### Title Rules (LOCKED)
+
+**Content Rules:**
+- No names (no people, classes, locations)
+- No "I" language
+- No directives (avoid "learning to," "how to," "should")
+- No emotional labeling ("feeling angry," "managing anxiety")
+- Neutral, descriptive phrasing only
+
+**Length Rules:**
+- 2-6 words (max)
+- Title Case preferred
+- No punctuation required
+
+**Valid Examples:**
+- Taking Turns Together
+- Sharing Space at School
+- Working as a Group
+- Getting Back Into Routine
+
+### Support Cue (Pages 1-6 Only)
+
+Each story page (1-6) includes a Support Cue for educators/parents. Not included on Cover.
+
+**Format:**
+```
+When to Use: [1 short line]
+What to Emphasize: [1 short line]
+One Line to Reinforce Later: [optional, 1 short line]
+```
+
+**Constraints:**
+- Each field is 1 short line
+- Readable in under 5 seconds
+- Supportive, non-instructional tone
+- Must align with page step intent
+- No individual child focus
+
+**Restricted Words (NEVER use in Support Cue):**
+- teach, coach, manage, intervene, correct, assess
+
+### Image Generation Rules
+
+| Page | Image Focus |
+|------|-------------|
+| **Cover** | Calm establishing group moment |
+| **Page 1** | Neutral shared scenario |
+| **Page 2** | Subtle different reactions |
+| **Page 3** | Gentle, safe emotions |
+| **Page 4** | Helpful group behaviors |
+| **Page 5** | Shared success |
+| **Page 6** | Group continuing activity naturally |
 
 ---
 
@@ -197,33 +277,75 @@ content: `The story must be exactly ${storyParams.numPages} pages...
 - If numPages is 1: [single page]`
 ```
 
-**New (fixed 6-page framework):**
+**New (fixed 6-page framework, cover handled separately):**
 ```typescript
-content: `The story must be exactly 6 pages following this framework:
+content: `The story must have exactly 6 story pages (Pages 1-6). Cover is handled separately via cover_page_* fields.
 
-Page 1 - SITUATION: Introduce the friend group and describe what's happening.
-Set the scene where the group encounters a challenge or opportunity related to ${storyParams.socialSkill}.
-Focus on descriptive sentences about the setting and characters.
+COVER (handled via cover_page_* fields, NOT in pages array):
+- Generate a title (2-6 words, Title Case)
+- Title rules: NO names, NO "I" language, NO directives ("learning to," "how to"), NO emotional labeling
+- Valid examples: "Taking Turns Together", "Sharing Space at School", "Working as a Group"
+- cover_page_coaching_content: Brief intro for educators
+- cover_page_image_instruction: Full group portrait showing all characters together
 
-Page 2 - PERSPECTIVE: Show how different group members see or understand the situation.
-Each character may have a different viewpoint, concern, or idea.
-Include perspective sentences showing what characters might be thinking.
+STORY TEXT RULES (apply to all pages 1-6):
+- Word count: 40-60 words per page (STRICT)
+- NO character names (no proper names anywhere)
+- NO first-person POV (no "I," "my")
+- Use group language: "we", "the group", "children", "some…others…"
+- NO directives ("must," "should," "have to")
+- NO dialogue or quotation marks
+- NO time jumps ("later that week," "after many days")
+- Non-clinical language only
 
-Page 3 - FEELING: Acknowledge and validate the emotions within the group.
-Show how different characters feel about the situation.
-Include affirmative sentences that validate these feelings as normal and okay.
+Page 1 - SITUATION:
+- Describes a common shared scenario
+- Neutral and descriptive only
+- NO emotions or solutions introduced
+- Image: Neutral shared scenario
 
-Page 4 - POSITIVE CHOICE: The group discusses and decides on a positive action together.
-Show the collaborative decision-making process.
-Include cooperative sentences about how characters help each other.
+Page 2 - PERSPECTIVE:
+- Shows neutral differences in noticing or thinking
+- NO right vs. wrong framing
+- Uses inclusive phrasing ("some…others…")
+- Image: Subtle different reactions
 
-Page 5 - COMMUNITY OUTCOME: Show the positive results of working together.
-The group experiences the benefits of their collective choice.
-Connect the outcome to the social skill being learned.
+Page 3 - FEELING:
+- Uses plural or range-based feelings
+- Gentle, non-escalated emotional tone
+- NO single emotional arc
+- Image: Gentle, safe emotions
 
-Page 6 - REINFORCEMENT: Reinforce the lesson and show how it carries forward.
-The group reflects on what they learned about ${storyParams.socialSkill}.
-End with a forward-looking statement about using this skill in the future.`
+Page 4 - POSITIVE CHOICE:
+- Models 1-2 helpful options
+- Focus on effort, NOT correctness
+- NO directives or commands
+- Image: Helpful group behaviors
+
+Page 5 - COMMUNITY OUTCOME:
+- Shows shared benefit to the group
+- Emphasizes belonging, fairness, or flow
+- NO praise, rewards, or evaluation
+- Image: Shared success
+
+Page 6 - REINFORCEMENT:
+- Forward-looking and reusable
+- Collective language only ("we," "friends")
+- NO reflection questions
+- NO assessment or goals
+- Image: Group continuing activity naturally
+
+SUPPORT CUE (generate for Pages 1-6 only, NOT cover):
+For each page, include a support_cue object with:
+- when_to_use: [1 short line]
+- what_to_emphasize: [1 short line]
+- reinforce_later: [optional, 1 short line]
+
+Support Cue Rules:
+- Each field max 1 short line, readable in under 5 seconds
+- Supportive, non-instructional tone
+- NEVER use words: teach, coach, manage, intervene, correct, assess
+- No individual child focus`
 ```
 
 ### Validation Schema Updates
@@ -474,59 +596,145 @@ export const INDIVIDUAL_PAGE_FRAMEWORK = {
 };
 
 /**
- * Group Story Page Framework
- * Fixed 6-page structure based on Carol Gray's Social Story model.
+ * Group Story Page Framework (v1.2)
+ * Fixed 6-page structure + separate cover based on Carol Gray's Social Story model.
+ * Cover is handled via cover_page_* fields, NOT in pages array.
  * This framework MUST NOT be changed.
  */
 export const GROUP_PAGE_FRAMEWORK = {
-  pageCount: 6,
+  totalPages: 6,  // Story pages only (cover is separate)
+  contentPages: 6,  // Pages 1-6
+  // Cover config (handled separately via cover_page_* fields)
+  cover: {
+    purpose: 'Cover',
+    carolModel: 'Scene Setting',
+    contentFocus: 'Calm establishing group moment',
+    imageGuidance: 'Full group portrait showing all characters together',
+  },
+  // Story pages only (pages 1-6), cover is NOT in this array
   pages: [
     {
       page: 1,
       purpose: 'Situation',
       carolModel: 'Descriptive',
-      prompt: 'Introduce the friend group and describe what\'s happening. Set the scene where the group encounters a challenge or opportunity related to the social skill. Focus on descriptive sentences about the setting and characters.'
+      contentFocus: 'Describes common shared scenario',
+      constraints: 'Neutral, descriptive; no emotions or solutions introduced',
+      imageGuidance: 'Neutral shared scenario',
+      hasSupportCue: true
     },
     {
       page: 2,
       purpose: 'Perspective',
       carolModel: 'Perspective',
-      prompt: 'Show how different group members see or understand the situation. Each character may have a different viewpoint, concern, or idea. Include perspective sentences showing what characters might be thinking.'
+      contentFocus: 'Shows neutral differences in noticing/thinking',
+      constraints: 'No right vs. wrong framing; uses "some…others…"',
+      imageGuidance: 'Subtle different reactions',
+      hasSupportCue: true
     },
     {
       page: 3,
       purpose: 'Feeling',
       carolModel: 'Affirmative',
-      prompt: 'Acknowledge and validate the emotions within the group. Show how different characters feel about the situation. Include affirmative sentences that validate these feelings as normal and okay.'
+      contentFocus: 'Uses plural/range-based feelings',
+      constraints: 'Gentle, non-escalated emotional tone; no single emotional arc',
+      imageGuidance: 'Gentle, safe emotions',
+      hasSupportCue: true
     },
     {
       page: 4,
       purpose: 'Positive Choice',
       carolModel: 'Directive/Cooperative',
-      prompt: 'The group discusses and decides on a positive action together. Show the collaborative decision-making process. Include cooperative sentences about how characters help each other.'
+      contentFocus: 'Models 1-2 helpful options',
+      constraints: 'Focus on effort, not correctness; no directives or commands',
+      imageGuidance: 'Helpful group behaviors',
+      hasSupportCue: true
     },
     {
       page: 5,
       purpose: 'Community Outcome',
       carolModel: 'Consequence',
-      prompt: 'Show the positive results of working together. The group experiences the benefits of their collective choice. Connect the outcome to the social skill being learned.'
+      contentFocus: 'Shows shared benefit to group',
+      constraints: 'Emphasizes belonging, fairness, flow; no praise, rewards, or evaluation',
+      imageGuidance: 'Shared success',
+      hasSupportCue: true
     },
     {
       page: 6,
       purpose: 'Reinforcement',
       carolModel: 'Control',
-      prompt: 'Reinforce the lesson and show how it carries forward. The group reflects on what they learned about the social skill. End with a forward-looking statement about using this skill in the future.'
+      contentFocus: 'Forward-looking and reusable',
+      constraints: 'Collective language only; no reflection questions, assessment, or goals',
+      imageGuidance: 'Group continuing activity naturally',
+      hasSupportCue: true
     }
   ],
 
+  // Title generation rules
+  titleRules: {
+    minWords: 2,
+    maxWords: 6,
+    format: 'Title Case',
+    prohibited: ['names', 'I language', 'directives', 'emotional labeling'],
+    examples: ['Taking Turns Together', 'Sharing Space at School', 'Working as a Group']
+  },
+
+  // Story text rules (applies to pages 1-6)
+  textRules: {
+    wordCount: { min: 40, max: 60 },
+    prohibited: {
+      characterNames: true,
+      firstPersonPOV: true,
+      directives: ['must', 'should', 'have to'],
+      dialogue: true,
+      timeJumps: true,
+      clinicalLanguage: true
+    },
+    required: {
+      groupLanguage: ['we', 'the group', 'children', 'some…others…']
+    }
+  },
+
+  // Support cue rules (pages 1-6 only)
+  supportCueRules: {
+    format: {
+      whenToUse: '1 short line',
+      whatToEmphasize: '1 short line',
+      reinforceLater: 'optional, 1 short line'
+    },
+    maxReadTime: '5 seconds',
+    tone: 'supportive, non-instructional',
+    restrictedWords: ['teach', 'coach', 'manage', 'intervene', 'correct', 'assess'],
+    noIndividualChildFocus: true
+  },
+
   getFrameworkPrompt: (socialSkill: string): string => {
-    const pageInstructions = GROUP_PAGE_FRAMEWORK.pages
-      .map(p => `Page ${p.page} - ${p.purpose.toUpperCase()}: ${p.prompt.replace('the social skill', socialSkill)}`)
+    // Pages array contains only pages 1-6 (cover is handled separately via cover_page_* fields)
+    const storyPageInstructions = GROUP_PAGE_FRAMEWORK.pages
+      .map(p => `Page ${p.page} - ${p.purpose.toUpperCase()}:
+- Content: ${p.contentFocus}
+- Constraints: ${p.constraints}
+- Image: ${p.imageGuidance}`)
       .join('\n\n');
 
-    return `The story must be exactly 6 pages following this framework:
+    return `The story must have exactly 6 story pages (cover is handled separately via cover_page_* fields):
 
-${pageInstructions}`;
+COVER (separate from pages array):
+- Title only (2-6 words, Title Case)
+- NO names, NO "I" language, NO directives, NO emotional labeling
+- Image instruction via cover_page_image_instruction field
+- Coaching content via cover_page_coaching_content field
+
+STORY TEXT RULES (all pages 1-6):
+- Word count: 40-60 words per page (STRICT)
+- NO character names, NO first-person POV, NO directives, NO dialogue, NO time jumps
+- Use group language: "we", "the group", "children", "some…others…"
+
+${storyPageInstructions}
+
+SUPPORT CUE (pages 1-6 only):
+Generate support_cue with: when_to_use, what_to_emphasize, reinforce_later (optional)
+- Max 1 short line each, readable in 5 seconds
+- NEVER use: teach, coach, manage, intervene, correct, assess`;
   }
 };
 
@@ -634,29 +842,49 @@ const AGE_RANGE_LABELS: Record<string, string> = {
 - [ ] **types.ts**: Add skill constants (`INDIVIDUAL_SKILLS`, `GROUP_SKILLS`)
 - [ ] **types.ts**: Add derived types (`IndividualSkill`, `GroupSkill`, `SocialSkill`)
 - [ ] **types.ts**: Add helper functions (`getSkillsForProtagonistType`, `isValidSkillForProtagonistType`)
+- [ ] **types.ts**: Add `SupportCue` interface for pages 1-6
 - [ ] **AIStoryGenerator.tsx**: Import skills from `types.ts`
 - [ ] **AIStoryGenerator.tsx**: Use `getSkillsForProtagonistType()` for conditional rendering
-- [ ] **AIStoryGenerator.tsx**: Hide page count selector for group stories
+- [ ] **AIStoryGenerator.tsx**: Hide page count selector for group stories (fixed at 6 story pages, cover handled separately)
 - [ ] **aiGenerator.json (en)**: Add nested `groupSkills` section
 - [ ] **aiGenerator.json (es)**: Add nested `groupSkills` section
 
 ### Backend
 
 - [ ] **story-prompts.ts**: Create new module with prompt builders
-- [ ] **story-prompts.ts**: Define `GROUP_PAGE_FRAMEWORK` constant
-- [ ] **story-prompts.ts**: Implement `buildGroupStoryPrompts()`
+- [ ] **story-prompts.ts**: Define `GROUP_PAGE_FRAMEWORK` constant (v1.2 with 6 story pages + separate cover)
+- [ ] **story-prompts.ts**: Implement `buildGroupStoryPrompts()` with:
+  - Title rules (2-6 words, no names, no directives)
+  - Story text rules (40-60 words, group language, no dialogue)
+  - Page-specific constraints for each of 6 story pages
+  - Support cue generation for pages 1-6
+  - Image guidance per page
 - [ ] **story-prompts.ts**: Implement `wrapWithSecurityLayer()`
 - [ ] **icraft-genAi.ts**: Import and use prompt builders from `story-prompts.ts`
-- [ ] **icraft-genAi.ts**: Force `numPages = 6` for group stories
+- [ ] **icraft-genAi.ts**: Force `numPages = 6` for group stories (cover handled separately via cover_page_* fields)
 - [ ] **validation-schemas.ts**: Import skill types from shared location
 - [ ] **validation-schemas.ts**: Add skill/protagonist type validation
+- [ ] **validation-schemas.ts**: Add word count validation (40-60 per page)
+
+### AI Output Validation
+
+- [ ] Validate title length (2-6 words)
+- [ ] Validate title content (no names, no "I", no directives)
+- [ ] Validate page word count (40-60 words)
+- [ ] Validate no character names in text
+- [ ] Validate no first-person POV
+- [ ] Validate support cue format and restricted words
 
 ### Testing
 
 - [ ] Test individual story generation (unchanged behavior)
-- [ ] Test group story generation with new framework
+- [ ] Test group story generation with new 6-page framework (+ separate cover)
 - [ ] Test all 10 group skills generate correctly
 - [ ] Verify page framework is followed in generated content
+- [ ] Verify title rules are enforced
+- [ ] Verify word count limits (40-60 per page)
+- [ ] Verify support cues generated for pages 1-6 only
+- [ ] Verify support cue restricted words not used
 - [ ] Test backward compatibility with existing stories
 
 ---

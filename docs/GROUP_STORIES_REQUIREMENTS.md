@@ -1,5 +1,8 @@
 # Requirements Analysis: Group Stories - Group as Protagonist Approach
 
+**Version**: 1.2
+**Last Updated**: 2025-01-09
+
 ## Summary
 
 This document analyzes the requirements for adding **group stories** to iCraftStories where the **group itself is the protagonist** - not a main character with supporting characters. This approach dramatically simplifies the user experience by reducing group story inputs from 9 fields to just 5, while letting the AI generate the entire character ensemble.
@@ -7,6 +10,112 @@ This document analyzes the requirements for adding **group stories** to iCraftSt
 **Key Insight**: For group stories, the GROUP is the protagonist. There is no "main character" - the friends/siblings/teammates share the spotlight equally.
 
 **Key Principle**: Less input = faster story creation for busy families.
+
+**Internal Summary**: Group Stories are whole-group, image-led stories with no names, no individual POV, and 40–60 words per page, designed for shared learning and reuse.
+
+---
+
+## Hard Requirements (v1.2 Locked)
+
+### A) Output Structure
+
+| Requirement | Details |
+|-------------|---------|
+| **Total Pages** | 7 pages displayed (Cover + Pages 1-6) |
+| **numPages Parameter** | 6 (story pages only, cover handled separately) |
+| **Cover** | Handled via `cover_page_*` fields, NOT in pages array |
+| **Story Pages** | Pages 1-6 in the pages array with text and images |
+| **Page Order** | LOCKED: cover → situation → perspective → feeling → positive_choice → community_outcome → reinforcement |
+| **Support Cue** | Pages 1-6 only (not on Cover) |
+| **Main Character Fields** | NOT used for Group type |
+| **Skills** | Group Skill list only |
+
+### B) Title Rules (LOCKED)
+
+**Content Rules:**
+- No names (no people, classes, locations)
+- No "I" language
+- No directives (avoid "learning to," "how to," "should")
+- No emotional labeling ("feeling angry," "managing anxiety")
+- Neutral, descriptive phrasing only
+
+**Length Rules:**
+- 2-6 words (max)
+- Title Case preferred
+- No punctuation required
+
+**Valid Examples:**
+- Taking Turns Together
+- Sharing Space at School
+- Working as a Group
+- Getting Back Into Routine
+- Helping Our Classroom
+- Staying Safe Together
+- Listening During Circle Time
+
+### C) Story Text Rules (Content Guardrails)
+
+**Word Count (LOCKED):**
+- Pages 1-6: Target **40-60 words** each
+- If generated text exceeds limits, system auto-shortens or regenerates
+
+**Language/Tone:**
+| Rule | Description |
+|------|-------------|
+| No character names | No proper names anywhere in text |
+| No first-person child POV | No "I," "my" as narrator |
+| Group-based language | Use "we", "the group", "children", "some…others…" |
+| No directives | No "must," "should," "have to" |
+| No dialogue | No quotation marks or direct speech |
+| No time jumps | No "later that week," "after many days" |
+| Non-clinical language | No diagnostic or clinical terminology |
+
+### D) Page-Specific Content Requirements
+
+| Page | Purpose | Content Focus | Constraints |
+|------|---------|---------------|-------------|
+| **Page 1** | Situation | Describes common shared scenario | Neutral, descriptive; no emotions or solutions |
+| **Page 2** | Perspective | Shows neutral differences in noticing/thinking | No right vs. wrong; uses "some…others…" |
+| **Page 3** | Feeling | Uses plural/range-based feelings | Gentle, non-escalated emotional tone |
+| **Page 4** | Positive Choice | Models 1-2 helpful options | Focus on effort, not correctness; no directives |
+| **Page 5** | Community Outcome | Shows shared benefit to group | Emphasizes belonging, fairness, flow; no praise/rewards |
+| **Page 6** | Reinforcement | Forward-looking and reusable | Collective language only; no reflection questions |
+
+### E) Support Cue Rules (Pages 1-6 Only)
+
+**Format:**
+```
+When to Use: [1 short line]
+What to Emphasize: [1 short line]
+One Line to Reinforce Later: [optional, 1 short line]
+```
+
+**Constraints:**
+- Each field is 1 short line
+- Readable in under 5 seconds
+- Supportive, non-instructional tone
+- Must align with page step intent
+- No individual child focus
+
+**Restricted Words (NEVER use):**
+- teach
+- coach
+- manage
+- intervene
+- correct
+- assess
+
+### F) Image Generation Rules
+
+| Page | Image Focus |
+|------|-------------|
+| **Cover** | Calm establishing group moment |
+| **Page 1 (Situation)** | Neutral shared scenario |
+| **Page 2 (Perspective)** | Subtle different reactions |
+| **Page 3 (Feeling)** | Gentle, safe emotions |
+| **Page 4 (Positive Choice)** | Helpful group behaviors |
+| **Page 5 (Community Outcome)** | Shared success |
+| **Page 6 (Reinforcement)** | Group continuing activity naturally |
 
 ---
 
