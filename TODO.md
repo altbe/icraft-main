@@ -1,6 +1,6 @@
 # iCraftStories TODO
 
-**Last Updated:** December 28, 2025
+**Last Updated:** January 17, 2026
 **Project:** iCraftStories Monorepo (Frontend + Backend)
 
 ## ✅ CRITICAL BUGS - FIXED (2025-10-30)
@@ -78,6 +78,13 @@
   - 9 active subscriptions confirmed in database
   - **Validated via**: Supabase MCP + Stripe MCP
 
+- [ ] **Remove Deprecated `/icraft-stripe-webhook` Endpoint** - ⏰ DUE 2026-01-28
+  - Endpoint currently returns 410 Gone with migration instructions
+  - 90-day grace period ends January 28, 2026
+  - Safe to fully remove after this date
+  - **Effort:** 1 hour
+  - **Location:** Backend Zuplo configuration
+
 ## 📍 High Priority - Next Sprint
 
 ### Clerk Integration - ✅ VALIDATED (December 28, 2025)
@@ -106,6 +113,68 @@
   - **Decision**: Marked complete - implementation exists and works
 
 ## 🔧 Medium Priority - Technical Debt
+
+### Documentation Improvements (Review: January 17, 2026)
+
+**High Priority:**
+- [ ] **Add Testing Documentation** (Frontend)
+  - No Jest/Playwright testing guide exists
+  - Document test structure, patterns, and CI integration
+  - **Location:** `frontend/docs/development/testing-guide.md`
+  - **Effort:** 1-2 days
+  - **Note:** Pairs with "Setup Testing Framework" task below
+
+- [ ] **Consolidate ADHD Accessibility Docs** (Frontend)
+  - 3 separate files: `adhd-compliance-review.md`, `adhd-improvements-by-risk.md`, `adhd-phase1-implementation.md`
+  - Merge into single comprehensive guide
+  - **Location:** `frontend/docs/accessibility/`
+  - **Effort:** Half day
+
+- [ ] **Create Troubleshooting Index** (Backend)
+  - Common issues and solutions not documented
+  - Add section to CLAUDE.md or separate file
+  - **Location:** `backend/docs-internal/troubleshooting.md`
+  - **Effort:** Half day
+
+**Medium Priority:**
+- [ ] **Split Large Backend Docs**
+  - `AGENTIC_MONITORING_IMPLEMENTATION.md` is 86KB - unwieldy
+  - Split into logical sections or create summary doc
+  - **Effort:** 1 day
+
+- [ ] **Add API Contract Documentation**
+  - OpenAPI → TypeScript type generation mentioned but not documented
+  - Document workflow for keeping types in sync
+  - **Location:** `backend/docs-internal/development/api-contracts.md`
+  - **Effort:** 1 day
+
+- [ ] **Create Component Patterns Guide** (Frontend)
+  - shadcn/ui usage patterns specific to project not documented
+  - Document component customization approach
+  - **Location:** `frontend/docs/development/component-patterns.md`
+  - **Effort:** 1 day
+
+- [ ] **Document IndexedDB Migrations** (Frontend)
+  - Schema v15 exists but no migration path documented
+  - Document how to add new schema versions
+  - **Location:** `frontend/docs/development/indexeddb-migrations.md`
+  - **Effort:** Half day
+
+**Low Priority:**
+- [ ] **Improve Archive Cross-References**
+  - Active docs rarely link to archived context
+  - Add "See Also" sections pointing to relevant archives
+  - **Effort:** Half day
+
+- [ ] **Add Performance Profiling Guide** (Frontend)
+  - Chrome DevTools/React DevTools patterns not documented
+  - **Location:** `frontend/docs/development/performance-profiling.md`
+  - **Effort:** 1 day
+
+- [ ] **Expand Backend Patterns Directory**
+  - `backend/docs-internal/patterns/` is currently minimal
+  - Add common patterns with code examples
+  - **Effort:** 1-2 days
 
 ### Code Quality
 - [ ] **Setup Testing Framework** - No tests currently exist
@@ -370,12 +439,12 @@
 
 ## 📊 Progress Overview
 
-**Active Tasks:** 4
-**Completed Tasks:** 55 (10 new in December 2025)
-**Completion Rate:** 93%
+**Active Tasks:** 15 (10 documentation + 1 webhook removal + 4 backlog)
+**Completed Tasks:** 55
+**Completion Rate:** 79%
 
 ### By Category:
-- **Critical Issues:** ✅ All complete (log noise fixed Dec 2025)
+- **Critical Issues:** ⏰ 1 pending (deprecated webhook removal due Jan 28)
 - **Backend Validation:** ✅ Complete (webhooks validated Dec 28, 2025)
 - **Integration:** ✅ Clerk validated (Dec 28, 2025) - sync correct, invitation UI wraps Clerk API
 - **Infrastructure:** ✅ All complete (Stripe, Teams, Credits)
@@ -383,20 +452,35 @@
 - **Frontend Features:** ✅ SEO, Security, Accessibility, PWA, Crisp Chat, Lint/Build, Log Noise
 - **Image Search:** ✅ All phases complete (Nov 2025)
 - **Admin Features:** ✅ User Management & Custom Plan Eligibility complete (Nov 2025); 1 pending (story approval UI)
-- **Documentation:** ✅ Major cleanup complete (99 files archived, obsolete refs fixed Dec 2025)
+- **Documentation:** 🔧 10 tasks (3 high, 4 medium, 3 low priority); major cleanup complete (99 files archived)
+- **Code Quality:** 🔧 1 pending (testing framework setup)
 
 ## 🎯 Next Actions
 
-### High Priority
-1. Remove deprecated `/icraft-stripe-webhook` endpoint (safe after 2026-01-28)
+### This Week (by Jan 28, 2026)
+1. **Remove deprecated `/icraft-stripe-webhook` endpoint** - Grace period ends Jan 28
 
-### Medium Priority
-1. Remove redundant Clerk API call in `getUserTeams()` (optional optimization)
+### Sprint 1 (Quick Wins + High Value)
+1. Consolidate ADHD docs (0.5 day) - quick win, reduces doc confusion
+2. Create Troubleshooting Index (0.5 day) - high developer value
+3. Add Testing Documentation (1-2 days) - enables testing framework
 
-### Backlog
-1. Testing framework setup
-2. Story approval workflow UI
-3. CDN image transformation
+### Sprint 2 (Testing + Infrastructure)
+1. Setup Testing Framework (1-2 weeks) - Vitest recommended
+2. Document IndexedDB Migrations (0.5 day) - captures tribal knowledge
+
+### Sprint 3 (Medium Priority)
+1. Split Large Backend Docs (1 day)
+2. Add API Contract Documentation (1 day)
+3. Create Component Patterns Guide (1 day)
+
+### Backlog (As Time Permits)
+1. Remove redundant Clerk API call in `getUserTeams()` - optional optimization
+2. Story approval workflow UI - low priority moderation feature
+3. CDN image transformation - performance enhancement
+4. Improve Archive Cross-References - nice-to-have
+5. Add Performance Profiling Guide - low priority
+6. Expand Backend Patterns Directory - low priority
 
 ## 📝 Notes
 
@@ -406,7 +490,7 @@
 - **Clerk sync validated** - One-way sync (Clerk → Supabase) is correct architecture (Dec 28, 2025)
   - Bidirectional sync NOT needed - Supabase is SSOT for preferences
   - Preferences API already working via `/users/preferences` endpoints
-- **Deprecated webhook** - Safe to remove after 2026-01-28 (90-day grace period)
+- **Deprecated webhook** - ⏰ Due for removal by 2026-01-28 (moved to Critical section)
 - **Custom invitation UI validated** - NOT duplicate, wraps Clerk Organizations API (Dec 28, 2025)
   - `team_invitations` table NOT used for invitations - Clerk is SSOT
 - **Clerk API audit complete** - 12 endpoints used, 1 redundant call identified (Dec 28, 2025)
